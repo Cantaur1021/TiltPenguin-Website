@@ -1,50 +1,60 @@
-import React from 'react';
-import { CardColumn } from '../CardColumn';
-import { Button } from '../Button';
+// components/HeroSection.tsx
+import React from "react";
+import { CardColumn } from "../CardColumn";
+import { Button } from "../Button";
 
 const HeroSection: React.FC = () => {
   const leftCards = [
     {
-      title: "FIXED A BUG WHERE AI TEAMMATES WOULD START CHANTING THE PLAYERS NAME IN UNISON [NOT FIXED]"
+      title: "V 0.4.2",
+      subtitle:
+        "FIXED A BUG WHERE AI TEAMMATES WOULD START CHANTING THE PLAYERS NAME IN UNISON [NOT FIXED]",
     },
     {
       title: "V 0.5.3",
-      subtitle: "NERFED THE PENGUINS, REMOVED THE ABILITY FOR THEM TO UNIONIZE, COMPENSATED WITH BREADCRUMBS"
+      subtitle:
+        "NERFED THE PENGUINS, REMOVED THE ABILITY FOR THEM TO UNIONIZE, COMPENSATED WITH BREADCRUMBS",
     },
     {
       title: "DEVLOG 382",
-      subtitle: "IMPLEMENTED A DYNAMIC WEATHER FEATURE. UNFORTUNATELY ITS RAINING BUGS RIGHT NOW."
+      subtitle:
+        "IMPLEMENTED A DYNAMIC WEATHER FEATURE. UNFORTUNATELY ITS RAINING BUGS RIGHT NOW.",
     },
     {
       title: "DEVLOG 576",
-      subtitle: "DESIGNED AND DEVELOPED A REALISTIC BURNOUT SIMULATOR (ALREADY WORKING AS INTENDED)"
-    }
+      subtitle:
+        "DESIGNED AND DEVELOPED A REALISTIC BURNOUT SIMULATOR (ALREADY WORKING AS INTENDED)",
+    },
   ];
 
   const rightCards = [
     {
-      title: '"I ASKED THE DEVS FOR MULTIPLAYER. THEY SAID: \'LIFE IS MULTIPLAYER. FIGURE IT OUT.\'"'
+      title: "PLAYER REVIEW",
+      subtitle:
+        "\"I ASKED THE DEVS FOR MULTIPLAYER. THEY SAID: 'LIFE IS MULTIPLAYER. FIGURE IT OUT.'\"",
     },
     {
       title: "QA TESTER",
-      subtitle: '"FOUND 78 BUGS IN ONE HOUR. REPORTED THEM. GOT PROMOTED TO \'LEAD ENTOMOLOGIST.\'"'
+      subtitle:
+        "\"FOUND 78 BUGS IN ONE HOUR. REPORTED THEM. GOT PROMOTED TO 'LEAD ENTOMOLOGIST.'\"",
     },
     {
       title: "PENGUIN QUOTES",
       subtitle: "[LOOSELY TRANSLATED]",
-      content: '"WE DIDN\'T ASK TO BE HERE. BUT HERE WE ARE. TILTING."'
+      content: '"WE DIDN\'T ASK TO BE HERE. BUT HERE WE ARE. TILTING."',
     },
     {
       title: "CRITICS",
-      subtitle: '"...THIS GAME DOESN\'T WASTE YOUR TIME. IT STEALS IT, AGGRESSIVELY...."'
-    }
+      subtitle:
+        '"...THIS GAME DOESN\'T WASTE YOUR TIME. IT STEALS IT, AGGRESSIVELY...."',
+    },
   ];
 
   return (
     <div className="hero-container">
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600&display=swap');
-        
+        @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600&display=swap");
+
         :root {
           --color-mint: #c2eee1;
           --color-light: #fefaef;
@@ -58,9 +68,13 @@ const HeroSection: React.FC = () => {
           position: relative;
           min-height: 100vh;
           width: 100%;
-          background: linear-gradient(to bottom, var(--color-mint) 25%, var(--color-light) 100%);
+          background: linear-gradient(
+            to bottom,
+            var(--color-mint) 25%,
+            var(--color-light) 100%
+          );
           overflow: hidden;
-          font-family: 'Poppins', sans-serif;
+          font-family: "Poppins", sans-serif;
         }
 
         .grid-background {
@@ -69,9 +83,12 @@ const HeroSection: React.FC = () => {
           left: 0;
           right: 0;
           bottom: 0;
-          background-image: 
-            linear-gradient(0deg, rgba(0,0,0,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+          background-image: linear-gradient(
+              0deg,
+              rgba(0, 0, 0, 0.03) 1px,
+              transparent 1px
+            ),
+            linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
           background-size: 40px 40px;
           pointer-events: none;
         }
@@ -88,16 +105,13 @@ const HeroSection: React.FC = () => {
         }
 
         .main-title {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: "Bebas Neue", sans-serif;
           font-size: clamp(4rem, 15vw, 10rem);
           letter-spacing: 0.05em;
           margin: 0;
           color: var(--color-yellow);
-          text-shadow: 
-  4px 4px 0 var(--color-black),
-  5px 5px 0 var(--color-black),
-  6px 6px 0 var(--color-black);
-
+          text-shadow: 4px 4px 0 var(--color-black),
+            5px 5px 0 var(--color-black), 6px 6px 0 var(--color-black);
 
           padding: 1rem 2rem;
           text-align: center;
@@ -131,7 +145,7 @@ const HeroSection: React.FC = () => {
           .main-title {
             font-size: clamp(3rem, 12vw, 6rem);
           }
-          
+
           .buttons-container {
             flex-direction: column;
             gap: 1rem;
@@ -148,9 +162,12 @@ const HeroSection: React.FC = () => {
       <div className="content-wrapper">
         <h1 className="main-title">TILTPENGUIN</h1>
         <div className="subtitle-container">
-          <p className="subtitle">A scrappy solo studio powered by caffeine and delusion.</p>
           <p className="subtitle">
-            Everything here is open source and free, so I can break things and you can fix them <span className="emoji">😊</span>
+            A scrappy solo game studio powered by delusion.
+          </p>
+          <p className="subtitle">
+            Everything here is open source and free, so I can break things and
+            you can fix them <span className="emoji">😊</span>
           </p>
         </div>
         <div className="buttons-container">

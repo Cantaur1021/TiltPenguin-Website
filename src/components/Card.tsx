@@ -1,4 +1,5 @@
-import React from 'react';
+// components/Card.tsx
+import React from "react";
 
 interface CardProps {
   title: string;
@@ -12,7 +13,7 @@ export const Card: React.FC<CardProps> = ({ title, subtitle, content }) => {
       <h3 className="card-title">{title}</h3>
       {subtitle && <p className="card-subtitle">{subtitle}</p>}
       {content && <p className="card-content">{content}</p>}
-      
+
       <style jsx>{`
         .card {
           background-color: var(--color-yellow);
@@ -23,7 +24,7 @@ export const Card: React.FC<CardProps> = ({ title, subtitle, content }) => {
         }
 
         .card-title {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: "Bebas Neue", sans-serif;
           font-size: 1.25rem;
           letter-spacing: 0.05em;
           margin: 0 0 0.5rem 0;

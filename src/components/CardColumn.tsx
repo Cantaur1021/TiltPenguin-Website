@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card } from './Card';
+import React from "react";
+import { Card } from "./Card";
 
 interface CardData {
   title: string;
@@ -9,24 +9,37 @@ interface CardData {
 
 interface CardColumnProps {
   cards: CardData[];
-  position: 'left' | 'right';
+  position: "left" | "right";
 }
 
 export const CardColumn: React.FC<CardColumnProps> = ({ cards, position }) => {
   return (
-    <div className={`cards-${position}`}>
-      {cards.map((card, index) => (
-        <Card key={index} {...card} />
-      ))}
-      
+    <div className={`cards-container cards-${position}`}>
+      <div className={`marquee marquee-${position}`}>
+        {/* First set of cards */}
+        {cards.map((card, index) => (
+          <div key={`${position}-${index}-1`} className="card-wrapper">
+            <Card {...card} />
+          </div>
+        ))}
+        {/* Second set for seamless loop */}
+        {cards.map((card, index) => (
+          <div key={`${position}-${index}-2`} className="card-wrapper">
+            <Card {...card} />
+          </div>
+        ))}
+        {/* Third set to ensure no gaps during animation */}
+        {cards.map((card, index) => (
+          <div key={`${position}-${index}-3`} className="card-wrapper">
+            <Card {...card} />
+          </div>
+        ))}
+      </div>
+
       <style jsx>{`
-        .cards-left, .cards-right {
+        .cards-container {
           position: absolute;
           top: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 2rem;
-          padding: 2rem 0;
           height: 100vh;
           overflow: hidden;
         }
@@ -39,8 +52,45 @@ export const CardColumn: React.FC<CardColumnProps> = ({ cards, position }) => {
           right: 0;
         }
 
+        .marquee {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .card-wrapper {
+          margin-bottom: 2rem;
+        }
+
+        .marquee-left {
+          animation: scroll-up 30s linear infinite;
+        }
+
+        .marquee-right {
+          animation: scroll-down 30s linear infinite;
+          /* Start offset for downward scroll */
+          transform: translateY(calc(-100% / 3));
+        }
+
+        @keyframes scroll-up {
+          0% {
+            transform: translateY(0);
+          }
+          100% {
+            transform: translateY(calc(-100% / 3));
+          }
+        }
+
+        @keyframes scroll-down {
+          0% {
+            transform: translateY(calc(-100% / 3));
+          }
+          100% {
+            transform: translateY(0);
+          }
+        }
+
         @media (max-width: 768px) {
-          .cards-left, .cards-right {
+          .cards-container {
             display: none;
           }
         }

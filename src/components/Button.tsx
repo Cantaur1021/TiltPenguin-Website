@@ -1,29 +1,29 @@
-import React from 'react';
+import React from "react";
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
   onClick?: () => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  variant = 'primary', 
-  onClick 
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = "primary",
+  onClick,
 }) => {
   return (
     <>
-      <button 
-        className={`button ${variant === 'secondary' ? 'secondary' : ''}`}
+      <button
+        className={`button ${variant === "secondary" ? "secondary" : ""}`}
         onClick={onClick}
       >
         {children}
       </button>
-      
+
       <style jsx>{`
         .button {
           padding: 1rem 2.5rem;
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: "Bebas Neue", sans-serif;
           font-size: 1.25rem;
           letter-spacing: 0.1em;
           border: 3px solid var(--color-black);
