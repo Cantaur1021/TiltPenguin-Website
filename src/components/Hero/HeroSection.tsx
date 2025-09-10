@@ -1,4 +1,3 @@
-// components/HeroSection.tsx
 import React from "react";
 import { CardColumn } from "../CardColumn";
 import { Button } from "../Button";
@@ -29,12 +28,12 @@ const HeroSection: React.FC = () => {
 
   const rightCards = [
     {
-      title: "PLAYER REVIEW",
+      title: "PLAYER FEEDBACK",
       subtitle:
         "\"I ASKED THE DEVS FOR MULTIPLAYER. THEY SAID: 'LIFE IS MULTIPLAYER. FIGURE IT OUT.'\"",
     },
     {
-      title: "QA TESTER",
+      title: "PLAYTESTER",
       subtitle:
         "\"FOUND 78 BUGS IN ONE HOUR. REPORTED THEM. GOT PROMOTED TO 'LEAD ENTOMOLOGIST.'\"",
     },
@@ -110,9 +109,8 @@ const HeroSection: React.FC = () => {
           letter-spacing: 0.05em;
           margin: 0;
           color: var(--color-yellow);
-          text-shadow: 4px 4px 0 var(--color-black),
-            5px 5px 0 var(--color-black), 6px 6px 0 var(--color-black);
-
+          text-shadow: 3px 3px 0 var(--color-black),
+            4px 4px 0 var(--color-black);
           padding: 1rem 2rem;
           text-align: center;
           line-height: 0.9;
@@ -140,10 +138,58 @@ const HeroSection: React.FC = () => {
           gap: 2rem;
           margin-top: 2rem;
         }
+        // In HeroSection.tsx, replace the existing media queries with:
+
+        @media (max-width: 1220px) {
+          .main-title {
+            font-size: clamp(3.5rem, 12vw, 6rem);
+            text-shadow: 3px 3px 0 var(--color-black),
+              4px 4px 0 var(--color-black);
+            padding: 0.75rem 1.5rem;
+          }
+
+          .content-wrapper {
+            padding: 120px 1rem; /* Reduced padding */
+            max-width: 600px;
+            margin: 0 auto;
+          }
+
+          .subtitle-container {
+            margin: 1.5rem 0 2rem 0;
+            max-width: 400px;
+          }
+
+          .subtitle {
+            font-size: 0.875rem;
+          }
+
+          .buttons-container {
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+          }
+        }
 
         @media (max-width: 768px) {
           .main-title {
             font-size: clamp(3rem, 12vw, 6rem);
+            text-shadow: 3px 3px 0 var(--color-black),
+              4px 4px 0 var(--color-black);
+            padding: 0;
+          }
+
+          .content-wrapper {
+            padding: 1rem;
+            max-width: 100%;
+          }
+
+          .subtitle-container {
+            margin: 1.5rem 0 2rem 0;
+            padding: 0 1rem;
+          }
+
+          .subtitle {
+            font-size: 0.875rem;
           }
 
           .buttons-container {
@@ -171,8 +217,8 @@ const HeroSection: React.FC = () => {
           </p>
         </div>
         <div className="buttons-container">
-          <Button>FOLLOW THE JOURNEY</Button>
-          <Button variant="secondary">VIEW SOURCE</Button>
+          <Button>COMING SOON</Button>
+          {/* <Button variant="secondary">VIEW SOURCE</Button> */}
         </div>
       </div>
 

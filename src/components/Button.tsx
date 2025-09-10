@@ -48,6 +48,29 @@ export const Button: React.FC<ButtonProps> = ({
         .button.secondary {
           background-color: white;
         }
+
+        // In Button.tsx, update the media queries:
+
+        @media (max-width: 1220px) {
+          .button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            box-shadow: 4px 4px 0 var(--color-black);
+            border-width: 2px;
+          }
+
+          .button:hover {
+            box-shadow: 6px 6px 0 var(--color-black);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .button {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.125rem;
+          }
+        }
       `}</style>
     </>
   );
