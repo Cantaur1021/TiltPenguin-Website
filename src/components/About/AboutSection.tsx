@@ -1,415 +1,252 @@
-// components/AboutSection.tsx
-import React, { useState, useRef } from "react";
+'use client';
 
-const AboutSection: React.FC = () => {
-  const [principles, setPrinciples] = useState([
-    {
-      id: "open-source",
-      title: "OPEN SOURCE",
-      description:
-        "Every project lives on GitHub. Take it, remix it, laugh at it (not too loud), and maybe fix it if you're feeling generous.",
-      position: 0,
-    },
-    {
-      id: "fun-first",
-      title: "FUN FIRST",
-      description:
-        "I suck at art, so mechanics always lead the way. Graphics stumble behind and play awkward catchup.",
-      position: 1,
-    },
-    {
-      id: "solo-powered",
-      title: "SOLO POWERED",
-      description:
-        'All bugs get promoted as "features." Every messy decision is canon now, and yes, that really is my official dev process.',
-      position: 2,
-    },
-    {
-      id: "bugs-welcome",
-      title: "BUGS WELCOME",
-      description:
-        "Big visions start small and scrappy — and honestly, they'll probably stay that way. But that's the charm of it (I think).",
-      position: 3,
-    },
-  ]);
+import React, { useMemo, useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragEndEvent,
+  DragCancelEvent,
+  DragOverlay,
+  defaultDropAnimationSideEffects,
+  DropAnimation,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { CSS } from "@dnd-kit/utilities";
 
-  const [draggedCard, setDraggedCard] = useState<string | null>(null);
-  const [dragOverCard, setDragOverCard] = useState<string | null>(null);
-  const [animatingCards, setAnimatingCards] = useState<Set<string>>(new Set());
-  const cardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const draggedOverRef = useRef<string | null>(null);
+type CardItem = { id: string; title: string; description: string };
 
-  const handleDragStart = (e: React.DragEvent, cardId: string) => {
-    setDraggedCard(cardId);
-    e.dataTransfer.effectAllowed = "move";
-
-    // Make the drag image invisible
-    const dragImage = new Image();
-    dragImage.src =
-      "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
-    e.dataTransfer.setDragImage(dragImage, 0, 0);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
-
-  const handleDragEnter = (e: React.DragEvent, cardId: string) => {
-    e.preventDefault();
-    if (draggedCard && draggedCard !== cardId) {
-      setDragOverCard(cardId);
-      draggedOverRef.current = cardId;
-    }
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    const relatedTarget = e.relatedTarget as HTMLElement;
-    if (!relatedTarget || !relatedTarget.closest(".principle-card")) {
-      setDragOverCard(null);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent, targetCardId: string) => {
-    e.preventDefault();
-    performSwap(targetCardId);
-  };
-
-  const handleDragEnd = (e: React.DragEvent) => {
-    if (
-      draggedOverRef.current &&
-      draggedCard &&
-      draggedOverRef.current !== draggedCard
-    ) {
-      performSwap(draggedOverRef.current);
-    } else {
-      setDraggedCard(null);
-      setDragOverCard(null);
-    }
-    draggedOverRef.current = null;
-  };
-
-  const performSwap = (targetCardId: string) => {
-    if (!draggedCard || draggedCard === targetCardId) return;
-
-    const draggedElem = cardRefs.current[draggedCard];
-    const targetElem = cardRefs.current[targetCardId];
-
-    if (draggedElem && targetElem) {
-      const draggedRect = draggedElem.getBoundingClientRect();
-      const targetRect = targetElem.getBoundingClientRect();
-
-      // Calculate the distance between cards
-      const draggedToTarget = {
-        x: targetRect.left - draggedRect.left,
-        y: targetRect.top - draggedRect.top,
-      };
-      const targetToDragged = {
-        x: draggedRect.left - targetRect.left,
-        y: draggedRect.top - targetRect.top,
-      };
-
-      // Swap the data immediately
-      setPrinciples((prev) => {
-        const newPrinciples = [...prev];
-        const draggedIndex = newPrinciples.findIndex(
-          (p) => p.id === draggedCard
-        );
-        const targetIndex = newPrinciples.findIndex(
-          (p) => p.id === targetCardId
-        );
-
-        // Swap the cards
-        [newPrinciples[draggedIndex], newPrinciples[targetIndex]] = [
-          newPrinciples[targetIndex],
-          newPrinciples[draggedIndex],
-        ];
-
-        return newPrinciples;
-      });
-
-      // Set cards as animating
-      setAnimatingCards(new Set([draggedCard, targetCardId]));
-
-      // Start cards at their swapped positions (opposite of where they should be)
-      // This is because the content has already swapped, but we want to show them moving
-      requestAnimationFrame(() => {
-        // The dragged card content is now in the target position, so move it from target to dragged
-        draggedElem.style.transform = `translate(${targetToDragged.x}px, ${targetToDragged.y}px)`;
-        targetElem.style.transform = `translate(${draggedToTarget.x}px, ${draggedToTarget.y}px)`;
-
-        // Force reflow
-        void draggedElem.offsetHeight;
-        void targetElem.offsetHeight;
-
-        // Add transition
-        draggedElem.style.transition =
-          "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)";
-        targetElem.style.transition =
-          "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)";
-        draggedElem.style.zIndex = "10";
-        targetElem.style.zIndex = "9";
-
-        // Animate to final position (no transform)
-        requestAnimationFrame(() => {
-          draggedElem.style.transform = "";
-          targetElem.style.transform = "";
-        });
-      });
-
-      // Clean up after animation
-      setTimeout(() => {
-        draggedElem.style.transition = "";
-        draggedElem.style.zIndex = "";
-        targetElem.style.transition = "";
-        targetElem.style.zIndex = "";
-        setAnimatingCards(new Set());
-      }, 500);
-    }
-
-    setDraggedCard(null);
-    setDragOverCard(null);
-  };
-
-  // Split principles into top and bottom rows
-  const topPrinciples = principles.slice(0, 2);
-  const bottomPrinciples = principles.slice(2, 4);
+// Replace your CardShell with this version
+function CardShell({
+  item,
+  className = "",
+  center = true,           // NEW: center text
+  border = 4,               // NEW: border thickness in px (default 4)
+}: {
+  item: CardItem;
+  className?: string;
+  center?: boolean;
+  border?: 3 | 4 | 5;
+}) {
+  const borderCls = border === 5 ? "border-[5px]" : border === 4 ? "border-[4px]" : "border-[3px]";
+  const shadowCls = border === 5 ? "shadow-[9px_9px_0_var(--color-black)]"
+                    : border === 4 ? "shadow-[8px_8px_0_var(--color-black)]"
+                                   : "shadow-[6px_6px_0_var(--color-black)]";
 
   return (
-    <section className="about-section">
-      <style jsx>{`
-        .about-section {
-          background-color: var(--color-yellow);
-          padding: 0 1.5rem;
-          min-height: 51.3125rem;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          position: relative;
-          border-top: 5px solid var(--color-black);
-          border-bottom: 5px solid var(--color-black);
+    <div
+      className={[
+        "w-[16.3125rem] h-[15.4375rem] p-5 select-none",
+        "bg-[#eeece4]",
+        borderCls,
+        "border-[var(--color-black)]",
+        shadowCls,
+        className,
+      ].join(" ")}
+    >
+      <h4
+        className={[
+          "m-0 text-[2.25rem] leading-[0.9] tracking-[0.05em] text-[var(--color-black)]",
+          "mb-3",                 // MORE space between title and body
+          center ? "text-center" : "",
+        ].join(" ")}
+        style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+      >
+        {item.title}
+      </h4>
+
+      <p
+        className={[
+          "m-0 text-[0.875rem] leading-[1.35] text-[var(--color-black)]",
+          center ? "text-center" : "",
+        ].join(" ")}
+        style={{ fontFamily: "Poppins, sans-serif" }}
+      >
+        {item.description}
+      </p>
+    </div>
+  );
+}
+
+
+function SortableCard({
+  item,
+  disableHover,
+}: {
+  item: CardItem;
+  disableHover: boolean;
+}) {
+  const {attributes, listeners, setNodeRef, transform, transition, isDragging, isOver} =
+    useSortable({ id: item.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,                 // let dnd-kit own the transform transition
+    willChange: "transform",
+    backfaceVisibility: "hidden",
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={[
+        "principle-card group",   // no bg/border/size/shadow here anymore
+        "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        "cursor-default md:cursor-grab active:cursor-grabbing",
+        isDragging ? "opacity-40" : "",
+        // only translate on hover (no shadow here)
+        !disableHover && !isDragging ? "hover:-translate-x-[2px] hover:-translate-y-[2px]" : "",
+      ].join(" ")}
+    >
+      <CardShell
+        item={item}
+        border={4}
+        center={true}
+        className={
+          // inner card controls shadow changes
+          isOver
+            ? "shadow-[10px_10px_0_var(--color-black)]"
+            : (!disableHover && !isDragging
+                ? "group-hover:shadow-[8px_8px_0_var(--color-black)]"
+                : "")
         }
+      />
+    </div>
+  );
+}
 
-        .container {
-          max-width: 100%;
-          width: 100%;
-          height: 100%;
-          padding: 0.875rem 0 2.25rem 0;
-          display: flex;
-          flex-direction: column;
-        }
+const AboutSection: React.FC = () => {
+  const [items, setItems] = useState<CardItem[]>([
+    { id: "open-source", title: "OPEN SOURCE", description: "Every project lives on GitHub. Take it, remix it, laugh at it (not too loud), and maybe fix it if you're feeling generous." },
+    { id: "fun-first", title: "FUN FIRST", description: "I suck at art, so mechanics always lead the way. Graphics stumble behind and play awkward catchup." },
+    { id: "solo-powered", title: "SOLO POWERED", description: 'All bugs get promoted as "features." Every messy decision is canon now, and yes, that really is my official dev process.' },
+    { id: "bugs-welcome", title: "BUGS WELCOME", description: "Big visions start small and scrappy — and honestly, they'll probably stay that way. But that's the charm of it (I think)." },
+  ]);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-        .section-title {
-          font-family: "Bebas Neue", sans-serif;
-          font-size: 9.4375rem;
-          text-align: center;
-          margin: 0 0 1.875rem 0;
-          letter-spacing: 0.05em;
-          color: #ffe68b;
-          text-shadow: 4px 4px 0 var(--color-black),
-            5px 5px 0 var(--color-black), 6px 6px 0 var(--color-black);
-          line-height: 0.8;
-        }
+  // Sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor,   { activationConstraint: { delay: 100, tolerance: 5 } }),
+    useSensor(KeyboardSensor)
+  );
 
-        .content-wrapper {
-          display: flex;
-          gap: 1.25rem;
-          flex: 1;
-          justify-content: center;
-        }
+  // Reduced motion?
+  const isReducedMotion = useMemo(
+    () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+    []
+  );
 
-        .left-content {
-          width: 41.625rem;
-          height: 37.375rem;
-          background-color: #eeece4;
-          border: 3px solid var(--color-black);
-          padding: 2rem;
-          box-shadow: 8px 8px 0 var(--color-black);
-          display: flex;
-          align-items: center;
-          flex-shrink: 0;
-        }
+  const firstRow = items.slice(0, 2);
+  const secondRow = items.slice(2);
 
-        .studio-description {
-          font-family: "Bebas Neue", sans-serif;
-          font-size: 2.625rem;
-          line-height: 1.1;
-          color: var(--color-black);
-          letter-spacing: 0.02em;
-          text-align: center;
-          margin: 0;
-        }
+  const onDragStart = ({ active }: DragStartEvent) => setActiveId(String(active.id));
+  const onDragCancel = (_e: DragCancelEvent) => setActiveId(null);
+  const onDragEnd = ({ active, over }: DragEndEvent) => {
+    if (!over || active.id === over.id) { setActiveId(null); return; }
+    const oldIndex = items.findIndex((i) => i.id === active.id);
+    const newIndex = items.findIndex((i) => i.id === over.id);
+    setItems((prev) => arrayMove(prev, oldIndex, newIndex));
+    setActiveId(null);
+  };
 
-        .right-side {
-          display: flex;
-          flex-direction: column;
-          gap: 0.25rem;
-          justify-content: space-between;
-        }
+  // Keep overlay simple—no scale/rotate to avoid “zoom” on handoff.
+  const dropAnimation: DropAnimation = {
+    duration: 380, // tweak if you want slower/faster
+    easing: "cubic-bezier(0.22,1,0.36,1)",
+    sideEffects: defaultDropAnimationSideEffects({
+      styles: {
+        active: { opacity: "0.6" },   // fade a touch while dropping
+        dragOverlay: { boxShadow: "12px 12px 0 var(--color-black)" }, // keep the neo-brutalist shadow only
+      },
+    }),
+  };
 
-        .principles-row {
-          display: grid;
-          grid-template-columns: 16.3125rem 16.3125rem;
-          gap: 1.25rem;
-          position: relative;
-        }
+  const activeItem = activeId ? items.find((i) => i.id === activeId) ?? null : null;
+  const disableHover = !!activeId || !!isReducedMotion; // no hover moves while sorting or if reduced motion
 
-        .principles-title {
-          font-family: "Bebas Neue", sans-serif;
-          font-size: 5.625rem;
-          text-align: center;
-          letter-spacing: 0.05em;
-          color: #ffe68b;
-          text-shadow: 3px 3px 0 var(--color-black),
-            4px 4px 0 var(--color-black);
-          margin: 0;
-          line-height: 0.8;
-        }
+  return (
+    <section className="relative flex min-h-[51.3125rem] flex-col items-center border-t-[5px] border-b-[5px] border-[var(--color-black)] bg-[var(--color-yellow)] px-6">
+      <div className="flex h-full w-full max-w-full flex-col pt-[0.875rem] pb-[2.25rem]">
+        <h2
+          className="mb-[1.875rem] text-center leading-[0.8] tracking-[0.05em] text-[#ffe68b]
+                     [text-shadow:4px_4px_0_var(--color-black),5px_5px_0_var(--color-black),6px_6px_0_var(--color-black)]
+                     text-[9.4375rem]"
+          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+        >
+          ABOUT TILTPENGUIN
+        </h2>
 
-        .principle-card {
-          width: 16.3125rem;
-          height: 15.4375rem;
-          background-color: #eeece4;
-          border: 3px solid var(--color-black);
-          padding: 1.25rem;
-          box-shadow: 6px 6px 0 var(--color-black);
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          cursor: grab;
-          user-select: none;
-          position: relative;
-          transition: box-shadow 0.1s ease, background-color 0.2s ease,
-            opacity 0.2s ease;
-        }
-
-        .principle-card:active {
-          cursor: grabbing;
-        }
-
-        .principle-card.dragging {
-          opacity: 0.4;
-          transition: opacity 0.1s ease;
-        }
-
-        .principle-card.drag-over {
-          background-color: #d8d6ce;
-          transform: scale(1.03);
-          box-shadow: 10px 10px 0 var(--color-black);
-          transition: transform 0.2s ease, box-shadow 0.2s ease,
-            background-color 0.2s ease;
-        }
-
-        .principle-card.animating {
-          pointer-events: none;
-        }
-
-        .principle-card:hover:not(.dragging):not(.animating) {
-          transform: translate(-2px, -2px);
-          box-shadow: 8px 8px 0 var(--color-black);
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-
-        .principle-title {
-          font-family: "Bebas Neue", sans-serif;
-          font-size: 2.25rem;
-          letter-spacing: 0.05em;
-          margin: 0 0 0.375rem 0;
-          color: var(--color-black);
-          line-height: 0.9;
-          pointer-events: none;
-        }
-
-        .principle-description {
-          font-family: "Poppins", sans-serif;
-          font-size: 0.875rem;
-          line-height: 1.25;
-          color: var(--color-black);
-          margin: 0;
-          pointer-events: none;
-        }
-
-        @media (max-width: 768px) {
-          .principle-card {
-            cursor: default;
-          }
-        }
-      `}</style>
-
-      <div className="container">
-        <h2 className="section-title">ABOUT TILTPENGUIN</h2>
-
-        <div className="content-wrapper">
-          <div className="left-content">
-            <p className="studio-description">
+        <div className="flex flex-1 justify-center gap-5">
+          {/* Left panel */}
+          <div className="flex h-[37.375rem] w-[41.625rem] flex-shrink-0 items-center border-[3px] border-[var(--color-black)] bg-[#eeece4] p-8 shadow-[8px_8px_0_var(--color-black)]">
+            <p
+              className="m-0 text-center text-[2.625rem] leading-[1.1] tracking-[0.02em] text-[var(--color-black)]"
+              style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+            >
               TILTPENGUIN IS A BOOTSTRAP GAME STUDIO RUN BY EXACTLY ONE PERSON.
-              <br />
-              <br />
-              BUILT ON SLEEPLESS NIGHTS, A LOT OF MISPLACED CONFIDENCE AND AN
-              UNHEALTHY RELATIONSHIP WITH GIT RESTORE.
-              <br />
-              <br />
-              EVERYTHING MADE HERE IS FREE AND OPEN BY DESIGN, BECAUSE THINGS
-              ARE ALWAYS MORE FUN WHEN YOU HAVE A 20 SOMETHING YEAR OLD YOU CAN
-              LAUGH AT.
+              <br /><br />
+              BUILT ON SLEEPLESS NIGHTS, A LOT OF MISPLACED CONFIDENCE AND AN UNHEALTHY RELATIONSHIP WITH GIT RESTORE.
+              <br /><br />
+              EVERYTHING MADE HERE IS FREE AND OPEN BY DESIGN, BECAUSE THINGS ARE ALWAYS MORE FUN WHEN YOU HAVE A 20 SOMETHING YEAR OLD YOU CAN LAUGH AT.
             </p>
           </div>
 
-          <div className="right-side">
-            <div className="principles-row">
-              {topPrinciples.map((principle) => (
-                <div
-                  key={principle.id}
-                  ref={(el) => (cardRefs.current[principle.id] = el)}
-                  className={`principle-card ${
-                    draggedCard === principle.id ? "dragging" : ""
-                  } ${dragOverCard === principle.id ? "drag-over" : ""} ${
-                    animatingCards.has(principle.id) ? "animating" : ""
-                  }`}
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, principle.id)}
-                  onDragOver={handleDragOver}
-                  onDragEnter={(e) => handleDragEnter(e, principle.id)}
-                  onDragLeave={handleDragLeave}
-                  onDrop={(e) => handleDrop(e, principle.id)}
-                  onDragEnd={handleDragEnd}
-                >
-                  <h4 className="principle-title">{principle.title}</h4>
-                  <p className="principle-description">
-                    {principle.description}
-                  </p>
+          {/* Right column with Sortable grid */}
+          <div className="flex flex-col justify-between gap-1">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              modifiers={[restrictToWindowEdges]}
+              onDragStart={onDragStart}
+              onDragEnd={onDragEnd}
+              onDragCancel={onDragCancel}
+            >
+              <SortableContext items={items.map((i) => i.id)} strategy={rectSortingStrategy}>
+                {/* Row 1 */}
+                <div className="grid grid-cols-[16.3125rem_16.3125rem] gap-5">
+                  {firstRow.map((it) => (
+                    <SortableCard key={it.id} item={it} disableHover={disableHover} />
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <h3 className="principles-title">PRINCIPLES</h3>
-
-            <div className="principles-row">
-              {bottomPrinciples.map((principle) => (
-                <div
-                  key={principle.id}
-                  ref={(el) => (cardRefs.current[principle.id] = el)}
-                  className={`principle-card ${
-                    draggedCard === principle.id ? "dragging" : ""
-                  } ${dragOverCard === principle.id ? "drag-over" : ""} ${
-                    animatingCards.has(principle.id) ? "animating" : ""
-                  }`}
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, principle.id)}
-                  onDragOver={handleDragOver}
-                  onDragEnter={(e) => handleDragEnter(e, principle.id)}
-                  onDragLeave={handleDragLeave}
-                  onDrop={(e) => handleDrop(e, principle.id)}
-                  onDragEnd={handleDragEnd}
+                {/* Heading between rows */}
+                <h3
+                  className="m-0 text-center leading-[0.8] tracking-[0.05em] text-[#ffe68b]
+                             [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
+                             text-[5.625rem]"
+                  style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
-                  <h4 className="principle-title">{principle.title}</h4>
-                  <p className="principle-description">
-                    {principle.description}
-                  </p>
+                  PRINCIPLES
+                </h3>
+
+                {/* Row 2 */}
+                <div className="grid grid-cols-[16.3125rem_16.3125rem] gap-5">
+                  {secondRow.map((it) => (
+                    <SortableCard key={it.id} item={it} disableHover={disableHover} />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+
+              {/* Overlay with no scale/rotate to prevent zoom flicker */}
+              <DragOverlay dropAnimation={dropAnimation}>
+                {activeItem ? <CardShell item={activeItem} /> : null}
+              </DragOverlay>
+            </DndContext>
           </div>
         </div>
       </div>
