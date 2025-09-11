@@ -1,86 +1,62 @@
-// components/Card.tsx
 import React from "react";
 
 interface CardProps {
   title: string;
   subtitle?: string;
   content?: string;
+  className?: string;
 }
 
-export const Card: React.FC<CardProps> = ({ title, subtitle, content }) => {
+export const Card: React.FC<CardProps> = ({ title, subtitle, content, className = "" }) => {
   return (
-    <div className="card">
-      <h3 className="card-title">{title}</h3>
-      {subtitle && <p className="card-subtitle">{subtitle}</p>}
-      {content && <p className="card-content">{content}</p>}
+    <div
+      className={[
+        // base box
+        "flex flex-col justify-center",
+        "bg-[var(--color-yellow)] border-[3px] border-[var(--color-black)]",
+        "w-[320px] min-h-[140px] p-8",
+        "shadow-[6px_6px_0_var(--color-black)]",
+        // ≤1220px adjustments
+        "max-[1220px]:w-[280px] max-[1220px]:h-[120px] max-[1220px]:min-h-0",
+        "max-[1220px]:p-4 max-[1220px]:shadow-[4px_4px_0_var(--color-black)] max-[1220px]:border-2",
+        "max-[1220px]:overflow-hidden",
+        className,
+      ].join(" ")}
+    >
+      <h3
+        className={[
+          "text-[1.375rem] leading-[1.2] tracking-[0.05em] m-0 mb-2",
+          "text-[var(--color-black)]",
+          "max-[1220px]:text-[1.125rem] max-[1220px]:mb-1 max-[1220px]:leading-[1.1]",
+        ].join(" ")}
+        style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+      >
+        {title}
+      </h3>
 
-      <style jsx global>{`
-        .card {
-          background-color: var(--color-yellow);
-          border: 3px solid var(--color-black);
-          padding: 2rem;
-          width: 320px;
-          min-height: 140px;
-          box-shadow: 6px 6px 0 var(--color-black);
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
+      {subtitle && (
+        <p
+          className={[
+            "text-[0.9375rem] font-semibold m-0 mb-2 leading-[1.4]",
+            "text-[var(--color-black)]",
+            "max-[1220px]:text-[0.75rem] max-[1220px]:mb-1 max-[1220px]:leading-[1.2]",
+          ].join(" ")}
+        >
+          {subtitle}
+        </p>
+      )}
 
-        @media (max-width: 1220px) {
-          .card {
-            width: 280px;
-            height: 120px; /* Fixed height instead of min-height */
-            min-height: unset;
-            padding: 1rem;
-            box-shadow: 4px 4px 0 var(--color-black);
-            border-width: 2px;
-            overflow: hidden; /* Hide overflow text */
-          }
-        }
-
-        .card-title {
-          font-family: "Bebas Neue", sans-serif;
-          font-size: 1.375rem;
-          letter-spacing: 0.05em;
-          margin: 0 0 0.5rem 0;
-          line-height: 1.2;
-          color: var(--color-black);
-        }
-
-        .card-subtitle {
-          font-size: 0.9375rem;
-          font-weight: 600;
-          margin: 0 0 0.5rem 0;
-          color: var(--color-black);
-        }
-
-        .card-content {
-          font-size: 0.9375rem;
-          line-height: 1.4;
-          margin: 0;
-          color: var(--color-black);
-        }
-
-        @media (max-width: 1220px) {
-          .card-title {
-            font-size: 1.125rem;
-            margin-bottom: 0.25rem;
-            line-height: 1.1;
-          }
-
-          .card-subtitle {
-            font-size: 0.75rem;
-            margin-bottom: 0.25rem;
-            line-height: 1.2;
-          }
-
-          .card-content {
-            font-size: 0.75rem;
-            line-height: 1.2;
-          }
-        }
-      `}</style>
+      {content && (
+        <p
+          className={[
+            "text-[0.9375rem] leading-[1.4] m-0",
+            "text-[var(--color-black)]",
+            "max-[1220px]:text-[0.75rem] max-[1220px]:leading-[1.2]",
+          ].join(" ")}
+        >
+          {content}
+        </p>
+      )}
     </div>
   );
 };
