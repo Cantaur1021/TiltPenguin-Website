@@ -89,6 +89,64 @@ function CardShell({
 }
 
 /* ---------------- Sortable Wrapper (no visuals) ---------------- */
+// function SortableCard({
+//   item,
+//   disableHover,
+//   className = "",
+// }: {
+//   item: CardItem;
+//   disableHover: boolean;
+//   className?: string;
+// }) {
+//   const {
+//     attributes,
+//     listeners,
+//     setNodeRef,
+//     transform,
+//     transition,
+//     isDragging,
+//     isOver,
+//   } = useSortable({ id: item.id });
+
+//   const style: React.CSSProperties = {
+//     transform: CSS.Transform.toString(transform),
+//     transition, // let dnd-kit drive transform animations
+//     willChange: "transform",
+//     backfaceVisibility: "hidden",
+//   };
+
+//   return (
+//     <div
+//       ref={setNodeRef}
+//       style={style}
+//       {...attributes}
+//       {...listeners}
+//       className={[
+//         "group transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+//         "cursor-default md:cursor-grab active:cursor-grabbing",
+//         isDragging ? "opacity-40" : "",
+//         !disableHover && !isDragging
+//           ? "hover:-translate-x-[2px] hover:-translate-y-[2px]"
+//           : "",
+//         className,
+//       ].join(" ")}
+//     >
+//       <CardShell
+//         item={item}
+//         border={4}
+//         center
+//         className={
+//           isOver
+//             ? "shadow-[12px_12px_0_var(--color-black)]"
+//             : !disableHover
+//             ? "group-hover:shadow-[10px_10px_0_var(--color-black)]"
+//             : ""
+//         }
+//       />
+//     </div>
+//   );
+// }
+
 function SortableCard({
   item,
   disableHover,
@@ -110,7 +168,7 @@ function SortableCard({
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
-    transition, // let dnd-kit drive transform animations
+    transition,
     willChange: "transform",
     backfaceVisibility: "hidden",
   };
@@ -123,7 +181,10 @@ function SortableCard({
       {...listeners}
       className={[
         "group transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        "cursor-default md:cursor-grab active:cursor-grabbing",
+        // Updated cursor classes
+        isDragging 
+          ? "cursor-grabbing" 
+          : "cursor-default md:cursor-grab",
         isDragging ? "opacity-40" : "",
         !disableHover && !isDragging
           ? "hover:-translate-x-[2px] hover:-translate-y-[2px]"
@@ -146,6 +207,7 @@ function SortableCard({
     </div>
   );
 }
+
 
 /* ---------------- About Section ---------------- */
 const AboutSection: React.FC = () => {
