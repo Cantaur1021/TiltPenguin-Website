@@ -39,7 +39,7 @@ function Card({
       {title && (
         <h4
           className={[
-            "mb-2 text-2xl font-extrabold uppercase leading-none tracking-wide",
+            "mb-2 text-4xl uppercase leading-none tracking-wide",
             center ? "text-center" : "",
           ].join(" ")}
           style={{ fontFamily: "'Bebas Neue', sans-serif" }}
@@ -49,7 +49,7 @@ function Card({
       )}
       {children && (
         <p
-          className={[center ? "text-center" : "", "m-0 text-base leading-snug"].join(" ")}
+          className={[center ? "text-center" : "", "m-0 text-base leading-snug font-bold"].join(" ")}
           style={{ fontFamily: "Poppins, sans-serif" }}
         >
           {children}
@@ -103,10 +103,10 @@ export default function AboutMeLocked() {
           >
             <Card className="h-full w-full flex items-center justify-center">
               <p
-                className="m-0 text-center text-[22px] leading-tight font-black uppercase"
+                className="m-0 text-center text-[42px] leading-tight uppercase"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               >
-                Hi, I'm Chinmay. I've built games for brand events and companies,
+                Hi, I&apos;m Chinmay. I&apos;ve built games for brand events and companies,
                 but TiltPenguin is where I get loose, get messy, and make the kind
                 of odd little experiments I actually want to play.
               </p>
@@ -115,7 +115,7 @@ export default function AboutMeLocked() {
 
           {/* Row 1 Col 3 — TOP RIGHT 607×355 */}
           <div 
-            className="relative rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden"
+            className="relative   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden"
             style={{ gridColumn: "3", gridRow: "1", width: "607px", height: "355px" }}
           >
             <Label>2007 KERALA // OUTDOOR GAMING SETUP</Label>
@@ -141,10 +141,10 @@ export default function AboutMeLocked() {
           >
             <Card className="h-full w-full flex items-center justify-center">
               <p
-                className="m-0 text-center text-[22px] leading-tight font-black uppercase"
+                className="m-0 text-center text-[42px] leading-tight uppercase"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               >
-                When I'm not wrangling code, I'm usually breaking it on purpose just to see what happens. 
+                When I&apos;m not wrangling code, I&apos;m usually breaking it on purpose just to see what happens. 
                 This site is literally just a museum of prototypes, mistakes and happy accidents (shout out Bob Ross).
               </p>
             </Card>
@@ -165,7 +165,7 @@ export default function AboutMeLocked() {
 
           {/* Row 7 Col 1 — BOTTOM LEFT 607×355 */}
           <div 
-            className="relative rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden"
+            className="relative   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden"
             style={{ gridColumn: "1", gridRow: "7", width: "607px", height: "355px" }}
           >
             <Label>BARELY GROWN-UP ENGINEERING</Label>
@@ -174,7 +174,7 @@ export default function AboutMeLocked() {
 
           {/* Row 5 Col 3 — BOTTOM RIGHT 607×520 (moved up to row 5) */}
           <div 
-            className="relative rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden mt-27"
+            className="relative   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden mt-26.5"
             style={{ 
               gridColumn: "3", 
               gridRow: "5 / 8", 
@@ -192,15 +192,15 @@ export default function AboutMeLocked() {
       <div className="hidden md:grid lg:hidden gap-4 px-6 py-8">
         <Card className="flex items-center justify-center p-6">
           <p
-            className="m-0 text-center text-2xl leading-tight font-black uppercase"
+            className="m-0 text-center text-2xl leading-tight uppercase"
             style={{ fontFamily: "'Bebas Neue', sans-serif" }}
           >
-            Hi, I'm Chinmay. I've built games for brand events and companies, but TiltPenguin is where I get loose, get
+            Hi, I&apos;m Chinmay. I&apos;ve built games for brand events and companies, but TiltPenguin is where I get loose, get
             messy, and make the kind of odd little experiments I actually want to play.
           </p>
         </Card>
 
-        <div className="relative aspect-[16/9] rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
+        <div className="relative aspect-[16/9]   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
           <Label>2007 KERALA // OUTDOOR GAMING SETUP</Label>
           <Image src="/images/about/top-right.jpg" alt="Retro gaming setup" fill className="object-cover" />
         </div>
@@ -216,10 +216,10 @@ export default function AboutMeLocked() {
 
         <Card className="p-6">
           <p
-            className="m-0 text-center text-2xl leading-tight font-black uppercase"
+            className="m-0 text-center text-2xl leading-tight uppercase"
             style={{ fontFamily: "'Bebas Neue', sans-serif" }}
           >
-            When I'm not wrangling code, I'm usually breaking it on purpose just to see what happens. This site is
+            When I&apos;m not wrangling code, I&apos;m usually breaking it on purpose just to see what happens. This site is
             literally just a museum of prototypes, mistakes and happy accidents (shout out Bob Ross).
           </p>
         </Card>
@@ -234,11 +234,11 @@ export default function AboutMeLocked() {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="relative aspect-[16/9] rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
+          <div className="relative aspect-[16/9]   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
             <Label>BARELY GROWN-UP ENGINEERING</Label>
             <Image src="/images/about/bottom-left.jpg" alt="Lab chaos" fill className="object-cover" />
           </div>
-          <div className="relative aspect-[4/5] rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
+          <div className="relative aspect-[4/5]   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
             <Label>KERALA MY SPAWN POINT</Label>
             <Image src="/images/about/bottom-right.jpg" alt="Kerala street" fill className="object-cover" />
           </div>
@@ -249,15 +249,15 @@ export default function AboutMeLocked() {
       <div className="grid gap-3 px-4 py-6 md:hidden">
         <Card className="flex items-center justify-center">
           <p
-            className="m-0 text-center text-lg leading-tight font-black uppercase"
+            className="m-0 text-center text-lg leading-tight uppercase"
             style={{ fontFamily: "'Bebas Neue', sans-serif" }}
           >
-            Hi, I'm Chinmay. I've built games for brand events and companies, but TiltPenguin is where I get loose, get
+            Hi, I&apos;m Chinmay. I&apos;ve built games for brand events and companies, but TiltPenguin is where I get loose, get
             messy, and make the kind of odd little experiments I actually want to play.
           </p>
         </Card>
 
-        <div className="relative aspect-video rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
+        <div className="relative aspect-video   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
           <Label>2007 KERALA // OUTDOOR GAMING SETUP</Label>
           <Image src="/images/about/top-right.jpg" alt="Retro gaming setup" fill className="object-cover" />
         </div>
@@ -272,10 +272,10 @@ export default function AboutMeLocked() {
 
         <Card>
           <p
-            className="m-0 text-center text-lg leading-tight font-black uppercase"
+            className="m-0 text-center text-lg leading-tight uppercase"
             style={{ fontFamily: "'Bebas Neue', sans-serif" }}
           >
-            When I'm not wrangling code, I'm usually breaking it on purpose just to see what happens. This site is
+            When I&apos;m not wrangling code, I&apos;m usually breaking it on purpose just to see what happens. This site is
             literally just a museum of prototypes, mistakes and happy accidents (shout out Bob Ross).
           </p>
         </Card>
@@ -288,12 +288,12 @@ export default function AboutMeLocked() {
           Games that surprise, delight and maybe confuse you (and me as well).
         </Card>
 
-        <div className="relative aspect-video rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
+        <div className="relative aspect-video   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
           <Label>BARELY GROWN-UP ENGINEERING</Label>
           <Image src="/images/about/bottom-left.jpg" alt="Lab chaos" fill className="object-cover" />
         </div>
 
-        <div className="relative aspect-[3/4] rounded-md border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
+        <div className="relative aspect-[3/4]   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
           <Label>KERALA MY SPAWN POINT</Label>
           <Image src="/images/about/bottom-right.jpg" alt="Kerala street" fill className="object-cover" />
         </div>
