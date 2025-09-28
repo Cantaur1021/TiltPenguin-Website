@@ -79,7 +79,7 @@ function CardShell({
       </h4>
       <p
         className={[
-          "m-0 text-[0.95rem] md:text-[1rem] leading-[1.35] font-bold text-[var(--color-black)]",
+          "m-0 text-[0.95rem] md:text-[1rem] leading-[1.35] font-bo text-[var(--color-black)]",
           center ? "text-center" : "",
         ].join(" ")}
         style={{ fontFamily: "Poppins, sans-serif" }}
