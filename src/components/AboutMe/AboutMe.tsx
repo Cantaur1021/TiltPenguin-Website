@@ -119,7 +119,7 @@ export default function AboutMeLocked() {
             style={{ gridColumn: "3", gridRow: "1", width: "607px", height: "355px" }}
           >
             <Label>2007 KERALA // OUTDOOR GAMING SETUP</Label>
-            <Image src="/images/about/top-right.jpg" alt="Retro gaming setup" fill className="object-cover" priority />
+            <Image src="/images/about/top-right.webp" alt="Retro gaming setup" fill className="object-cover" priority />
           </div>
 
           {/* Row 3 Col 1 — SUPERPOWER + GOAL under left card */}
@@ -169,7 +169,7 @@ export default function AboutMeLocked() {
             style={{ gridColumn: "1", gridRow: "7", width: "607px", height: "355px" }}
           >
             <Label>BARELY GROWN-UP ENGINEERING</Label>
-            <Image src="/images/about/bottom-left.jpg" alt="Lab chaos" fill className="object-cover" />
+            <Image src="/images/about/bottom-left.webp" alt="Lab chaos" fill className="object-cover" />
           </div>
 
           {/* Row 5 Col 3 — BOTTOM RIGHT 607×520 (moved up to row 5) */}
@@ -183,7 +183,7 @@ export default function AboutMeLocked() {
             }}
           >
             <Label>KERALA MY SPAWN POINT</Label>
-            <Image src="/images/about/bottom-right.jpg" alt="Kerala street" fill className="object-cover" />
+            <Image src="/images/about/bottom-right.webp" alt="Kerala street" fill className="object-cover" />
           </div>
         </div>
       </div>
@@ -202,7 +202,7 @@ export default function AboutMeLocked() {
 
         <div className="relative aspect-[16/9]   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
           <Label>2007 KERALA // OUTDOOR GAMING SETUP</Label>
-          <Image src="/images/about/top-right.jpg" alt="Retro gaming setup" fill className="object-cover" />
+          <Image src="/images/about/top-right.webp" alt="Retro gaming setup" fill className="object-cover" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -236,11 +236,11 @@ export default function AboutMeLocked() {
         <div className="grid grid-cols-2 gap-4">
           <div className="relative aspect-[16/9]   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
             <Label>BARELY GROWN-UP ENGINEERING</Label>
-            <Image src="/images/about/bottom-left.jpg" alt="Lab chaos" fill className="object-cover" />
+            <Image src="/images/about/bottom-left.webp" alt="Lab chaos" fill className="object-cover" />
           </div>
           <div className="relative aspect-[4/5]   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
             <Label>KERALA MY SPAWN POINT</Label>
-            <Image src="/images/about/bottom-right.jpg" alt="Kerala street" fill className="object-cover" />
+            <Image src="/images/about/bottom-right.webp" alt="Kerala street" fill className="object-cover" />
           </div>
         </div>
       </div>
@@ -259,7 +259,7 @@ export default function AboutMeLocked() {
 
         <div className="relative aspect-video   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
           <Label>2007 KERALA // OUTDOOR GAMING SETUP</Label>
-          <Image src="/images/about/top-right.jpg" alt="Retro gaming setup" fill className="object-cover" />
+          <Image src="/images/about/top-right.webp" alt="Retro gaming setup" fill className="object-cover" />
         </div>
 
         <Card title="SUPERPOWER" center>
@@ -290,12 +290,12 @@ export default function AboutMeLocked() {
 
         <div className="relative aspect-video   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
           <Label>BARELY GROWN-UP ENGINEERING</Label>
-          <Image src="/images/about/bottom-left.jpg" alt="Lab chaos" fill className="object-cover" />
+          <Image src="/images/about/bottom-left.webp" alt="Lab chaos" fill className="object-cover" />
         </div>
 
         <div className="relative aspect-[3/4]   border-[3px] border-black shadow-[6px_6px_0_rgba(0,0,0,0.85)] overflow-hidden">
           <Label>KERALA MY SPAWN POINT</Label>
-          <Image src="/images/about/bottom-right.jpg" alt="Kerala street" fill className="object-cover" />
+          <Image src="/images/about/bottom-right.webp" alt="Kerala street" fill className="object-cover" />
         </div>
       </div>
     </section>
