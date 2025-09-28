@@ -1,0 +1,11 @@
+.customPointer {
+  cursor: url("/cursors/pointer.svg"), pointer;
+}
+
+.customGrab {
+  cursor: url("/cursors/flipper.svg"), grab;
+}
+
+.customGrabbing {
+  cursor: url("/cursors/flipper.svg"), grabbing;
+}
