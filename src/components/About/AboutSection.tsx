@@ -49,10 +49,10 @@ function CardShell({
       : "border-[3px]";
   const shadowCls =
     border === 5
-      ? "shadow-[9px_9px_0_var(--color-black)]"
+      ? "shadow-[7px_7px_0_var(--color-black)]"
       : border === 4
-      ? "shadow-[8px_8px_0_var(--color-black)]"
-      : "shadow-[6px_6px_0_var(--color-black)]";
+      ? "shadow-[6px_6px_0_var(--color-black)]"
+      : "shadow-[4px_4px_0_var(--color-black)]";
 
   return (
     <div
