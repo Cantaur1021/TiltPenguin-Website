@@ -38,10 +38,14 @@ function Card({
       {title && (
         <h4
           className={[
-            "mb-2 text-4xl uppercase leading-none tracking-wide",
+            "mb-2 uppercase leading-none tracking-wide",
             center ? "text-center" : "",
           ].join(" ")}
-          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+          style={{
+            fontFamily: "'Bebas Neue', sans-serif",
+            // titles on small cards
+            fontSize: "clamp(1.6rem, 1.1rem + 1.2vw, 2.25rem)",
+          }}
         >
           {title}
         </h4>
@@ -50,9 +54,14 @@ function Card({
         <p
           className={[
             center ? "text-center" : "",
-            "m-0 text-base leading-snug font-bold",
+            "m-0 font-bold",
           ].join(" ")}
-          style={{ fontFamily: "Poppins, sans-serif" }}
+          style={{
+            fontFamily: "Poppins, sans-serif",
+            // body text inside small cards
+            fontSize: "clamp(0.95rem, 0.85rem + 0.35vw, 1.1rem)",
+            lineHeight: 1.35,
+          }}
         >
           {children}
         </p>
@@ -63,12 +72,17 @@ function Card({
 
 /**
  * Aspect wrappers to preserve your Figma proportions while letting the
- * grid expand edge-to-edge. These match your original pixel boxes:
- *  - Wide block:   607 x 355  => aspect-[607/355]
- *  - Small cards:  296 x 251  => aspect-[296/251]
- *  - Tall image:   607 x 520  => aspect-[607/520]
+ * grid expand edge-to-edge.
  */
-function Aspect({ ratio, children, className = "" }: { ratio: string; children: React.ReactNode; className?: string }) {
+function Aspect({
+  ratio,
+  children,
+  className = "",
+}: {
+  ratio: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div className={["relative w-full", `aspect-[${ratio}]`, className].join(" ")}>
       <div className="absolute inset-0">{children}</div>
@@ -93,24 +107,33 @@ export default function AboutMeLocked() {
           mt-3 mb-1 md:mb-2
           text-center leading-[0.82] tracking-[0.04em]
           [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
-          text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem]
         "
-        style={{ color: "#FFE3E3", fontFamily: "'Bebas Neue', sans-serif" }}
+        style={{
+          color: "#FFE3E3",
+          fontFamily: "'Bebas Neue', sans-serif",
+          // scales from phones to big desktop
+          fontSize: "clamp(2.6rem, 6vw, 7.75rem)",
+        }}
       >
         ABOUT ME
       </h2>
 
       {/* Edge-to-edge grid with tight gaps (matches AboutSection) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 pb-6 px-3 md:px-4">
-
         {/* LEFT COLUMN (stack) */}
         <div className="flex flex-col gap-3 lg:gap-4">
-          {/* Top-left (wide text) — 607x355 */}
+          {/* Top-left (wide text) — 607/355 */}
           <Aspect ratio="607/355">
             <Card className="flex items-center justify-center">
               <p
-                className="m-0 text-center text-[2.1rem] md:text-[2.4rem] lg:text-[2.65rem] leading-[1.05] uppercase"
-                style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                className="m-0 text-center uppercase"
+                style={{
+                  fontFamily: "'Bebas Neue', sans-serif",
+                  // big paragraph blocks
+                  fontSize: "clamp(1.4rem, 1rem + 2.2vw, 2.65rem)",
+                  lineHeight: 1.05,
+                  letterSpacing: "0.01em",
+                }}
               >
                 Hi, I&apos;m Chinmay. I&apos;ve built games for brand events and companies,
                 but TiltPenguin is where I get loose, get messy, and make the kind
@@ -119,7 +142,7 @@ export default function AboutMeLocked() {
             </Card>
           </Aspect>
 
-          {/* Row of two small cards — 296x251 each */}
+          {/* Row of two small cards */}
           <div className="grid grid-cols-2 gap-3 lg:gap-4">
             <Aspect ratio="296/251">
               <Card title="SUPERPOWER" center>
@@ -133,7 +156,7 @@ export default function AboutMeLocked() {
             </Aspect>
           </div>
 
-          {/* Row of two small cards — 296x251 each */}
+          {/* Row of two small cards */}
           <div className="grid grid-cols-2 gap-3 lg:gap-4">
             <Aspect ratio="296/251">
               <Card title="WEAKNESS" center>
@@ -147,7 +170,7 @@ export default function AboutMeLocked() {
             </Aspect>
           </div>
 
-          {/* Bottom-left image — 607x355 */}
+          {/* Bottom-left image */}
           <Aspect ratio="607/355">
             <div className="relative h-full w-full border-[5px] border-[var(--color-black)] shadow-[8px_8px_0_var(--color-black)] overflow-hidden bg-[var(--paper)]">
               <Label>BARELY GROWN-UP ENGINEERING</Label>
@@ -158,7 +181,7 @@ export default function AboutMeLocked() {
 
         {/* RIGHT COLUMN (stack) */}
         <div className="flex flex-col gap-3 lg:gap-4">
-          {/* Top-right image — 607x355 */}
+          {/* Top-right image */}
           <Aspect ratio="607/355">
             <div className="relative h-full w-full border-[5px] border-[var(--color-black)] shadow-[8px_8px_0_var(--color-black)] overflow-hidden bg-[var(--paper)]">
               <Label>2007 KERALA // OUTDOOR GAMING SETUP</Label>
@@ -166,12 +189,17 @@ export default function AboutMeLocked() {
             </div>
           </Aspect>
 
-          {/* Middle-right (wide text) — 607x355 */}
+          {/* Middle-right (wide text) */}
           <Aspect ratio="607/355">
             <Card className="flex items-center justify-center">
               <p
-                className="m-0 text-center text-[2.1rem] md:text-[2.4rem] lg:text-[2.65rem] leading-[1.05] uppercase"
-                style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                className="m-0 text-center uppercase"
+                style={{
+                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontSize: "clamp(1.35rem, 0.95rem + 2.15vw, 2.65rem)",
+                  lineHeight: 1.05,
+                  letterSpacing: "0.01em",
+                }}
               >
                 When I&apos;m not wrangling code, I&apos;m usually breaking it on purpose just to see what happens.
                 This site is literally just a museum of prototypes, mistakes and happy accidents (shout out Bob Ross).
@@ -179,7 +207,7 @@ export default function AboutMeLocked() {
             </Card>
           </Aspect>
 
-          {/* Bottom-right tall image — 607x520 */}
+          {/* Bottom-right tall image */}
           <Aspect ratio="607/520">
             <div className="relative h-full w-full border-[5px] border-[var(--color-black)] shadow-[8px_8px_0_var(--color-black)] overflow-hidden bg-[var(--paper)]">
               <Label>KERALA MY SPAWN POINT</Label>
@@ -188,10 +216,6 @@ export default function AboutMeLocked() {
           </Aspect>
         </div>
       </div>
-
-      {/* Tablet & Mobile already follow edge-to-edge pattern via the same grid above.
-          If you want the old stacked variants, we can add specific md:hidden blocks again,
-          but this keeps the look consistent across breakpoints. */}
     </section>
   );
 }
