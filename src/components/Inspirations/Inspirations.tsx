@@ -1,307 +1,204 @@
+// app/components/GamesThatRaisedMe.tsx
 "use client";
 
-import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 
-/** ---------------- data ---------------- */
+// Types
 type Game = {
-  id: string;
+  key: string;
   title: string;
-  year?: string;
-  platform?: string;
-  cartColor?: string;    // top label color
-  screen: string;        // TV screenshot
-  teaser: string;
-  note: string;
+  body: string;
+  cartridgeSrc: string; // e.g., "/cartridges/minecraft.svg"
 };
 
+// ---- PLACEHOLDER DATA (replace cartridgeSrc with your real SVGs) ----
 const GAMES: Game[] = [
   {
-    id: "minecraft",
+    key: "minecraft",
     title: "Minecraft",
-    year: "2009",
-    platform: "Everywhere",
-    cartColor: "#78d957",
-    screen: "/images/games/minecraft.jpg",
-    teaser: "The spark. Flipped ‘play’ to ‘create’.",
-    note:
-      "Owned it on every device (even ones that cried). Kickstarted the whole ‘make things’ itch at 10.",
+    cartridgeSrc: "/cartridges.svg",
+    body:
+      "I’ve owned this game on every device that could run it (and a few that really couldn’t) (shout out PSP homebrew). I’ve liked games before, but Minecraft is what truly kickstarted my love for creating worlds when I was 10 years old. I spent hours making pixel art of my favorite characters, building a 1:1 scale version of my old home before it was demolished, and binge-watching Stampy and Squid’s adventure maps, immediately trying (and failing) to recreate something similar because I was just a 10 year with the attention span of a goldfish. Minecraft changed everything for me. I hope something I create one day can do the same for a 10-year-old somewhere as this game did for me.",
   },
   {
-    id: "nitw",
+    key: "nitw",
     title: "Night in the Woods",
-    year: "2017",
-    platform: "PC/Console",
-    cartColor: "#ff9bb3",
-    screen: "/images/games/nitw.jpg",
-    teaser: "Punk comfort. Put words to grief.",
-    note:
-      "During COVID, it locked me in a buzzing room of life. Cosmic underpayment at $20.",
+    cartridgeSrc: "/cartridges.svg",
+    body:
+      "What Minecraft did for me as a child, Night in the Woods did for me as a man-child. Most of my personality (notice how I didn't say all) was adopted from this game. Every element—from the art to the music to the story to the characters to Possum Springs—hit at the exact right time. It was mid-COVID, I’d lost someone close, and this game put into words what I struggled with, but with so much style and punk it made me—an indoor degen—feel cool. It yanked me off a dangerous ledge and locked me in a room buzzing with life. $20 feels like a cosmic underpayment. (Shout out Revenant Hill.)",
   },
   {
-    id: "gow",
-    title: "God of War + Ragnarök",
-    year: "2018–2022",
-    platform: "PS",
-    cartColor: "#9ad1ff",
-    screen: "/images/games/gow.jpg",
-    teaser: "Re-parenting with an axe.",
-    note:
-      "E3 2016 reveal lives rent-free. Took a character (and me) into adulthood.",
+    key: "gow",
+    title: "God of War (2018) + Ragnarök",
+    cartridgeSrc: "/cartridges.svg",
+    body:
+      "PlayStation’s 2016 E3 showcase is still king for me. Older, bearded Kratos; a gentler thunder; combat that flipped the series 180. Cory Barlog’s and Eric Williams’ masterpieces didn’t just reinvent a franchise; they redefined taking a character, a world, and an audience into adulthood. I’m glad I grew up with Kratos’s version of masculinity—flawed and striving—over alpha-podcaster posturing. I may not have muscles or a beard, but I am going bald and that’s totally a deliberate Kratos tribute and not genetics.",
   },
   {
-    id: "rdr2",
+    key: "rdr2",
     title: "Red Dead Redemption 2",
-    year: "2018",
-    platform: "PS/Xbox/PC",
-    cartColor: "#ffd36e",
-    screen: "/images/games/rdr2.jpg",
-    teaser: "Cowboys, but existential.",
-    note:
-      "Proved ‘games are art’ to my English teacher. Give devs flowers—and better hours.",
+    cartridgeSrc: "/cartridges.svg",
+    body:
+      "Cowboys have never been more depressing. I once showed my English teacher the trailer—unsure what I wanted, maybe validation that games are legit storytelling. She loved it. The world feels lived-in, dripping with history and melancholy; truly 3D characters; an epic that spans a continent. The gameplay didn’t need to be revolutionary; the story’s immersion could only be done in a game. Rockstar deserves the flowers (and yeah, please treat your employees better).",
+  },
+  {
+    key: "titanfall2",
+    title: "Titanfall 2",
+    cartridgeSrc: "/cartridges.svg",
+    body:
+      "“There's a point at 7,000 RPM… Who are you?” – Ben Affleck, *Cars*. (Yes, I know.) It’s pure momentum, inventive missions, and a campaign that never wastes your time. Underrated legend.",
+  },
+  {
+    key: "skyrim",
+    title: "Skyrim",
+    cartridgeSrc: "/cartridges.svg",
+    body:
+      "What’s a favorites list without Skyrim and Minecraft? For me, Skyrim was company. I grew up with basically no friends; somehow a game designed around isolation brought me comfort. Not the power fantasy, but wandering the world, imagining past battles on mountain tops, following rivers to their source. It taught me games can be a place to feel less alone.",
   },
 ];
 
-/** ------------- helpers ------------- */
-function useActiveStep(stepIds: string[]) {
-  const [active, setActive] = useState(0);
+// Tweak these to fit your console art
+const CONSOLE = {
+  src: "/console.svg", // your console SVG
+  // Cartridge slot position relative to the console wrapper.
+  // Adjust width/height/left/top so the cartridge sits perfectly in the slot.
+  slot: { width: 320, height: 180, left: 0, top: -20 }, // px relative to center; tweak freely
+};
 
-  useEffect(() => {
-    const els = stepIds
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
+export default function GamesThatRaisedMe() {
+  const trackRef = useRef<HTMLDivElement>(null);
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        // choose the entry closest to the viewport center
-        let best = { idx: 0, score: -Infinity };
-        for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          const rect = e.target.getBoundingClientRect();
-          const center = window.innerHeight / 2;
-          const dist = -Math.abs(rect.top + rect.height / 2 - center); // higher is better
-          const idx = stepIds.indexOf(e.target.id);
-          if (dist > best.score) best = { idx, score: dist };
-        }
-        if (best.score !== -Infinity) setActive(best.idx);
-      },
-      { threshold: [0.25, 0.5, 0.75] }
-    );
+  // Scroll progress across the entire track (N-1 transitions)
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end end"],
+  });
 
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [stepIds]);
+  const sections = GAMES.length;
+  const [raw, setRaw] = useState(0); // 0..(sections-1)
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    // tiny epsilon so we never hit an exact 1
+    const val = v * (sections - 1 - 1e-6);
+    setRaw(val < 0 ? 0 : val > sections - 1 ? sections - 1 : val);
+  });
 
-  return [active, setActive] as const;
-}
+  // Which two cartridges are transitioning right now
+  const baseIndex = Math.floor(raw);
+  const t = raw - baseIndex; // 0..1 within the current transition
 
-/** ------------- atoms (your vibe) ------------- */
-function Frame({ className = "", children }: { className?: string; children: React.ReactNode }) {
-  return (
-    <div
-      className={[
-        "border-[5px] border-[var(--color-black)] bg-[var(--paper)] shadow-[8px_8px_0_rgba(0,0,0,0.85)]",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </div>
-  );
-}
+  const currentIdx = Math.min(baseIndex, sections - 1);
+  const nextIdx = Math.min(baseIndex + 1, sections - 1);
 
-function LabelChip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="absolute right-2 top-2 rounded-sm border border-black/60 bg-[var(--paper)] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-[2px_2px_0_rgba(0,0,0,0.7)]">
-      {children}
-    </span>
-  );
-}
-
-/** ------------- main ------------- */
-export default function GamesSNESScroller() {
-  const stepIds = useMemo(() => GAMES.map((g) => `cart-step-${g.id}`), []);
-  const [active, setActive] = useActiveStep(stepIds);
+  // Which text is shown (switch halfway for a snappy feel)
+  const activeTextIdx = t < 0.5 ? currentIdx : nextIdx;
 
   return (
-    <section className="w-full py-16 md:py-20 lg:py-20">
-      <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8 xl:px-10">
-        <h2 className="mb-8 text-center text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none">
-          GAMES THAT RAISED ME
-        </h2>
+    <section id="games-that-raised-me" className="relative w-full">
+      {/* The scroll track defines how long the user scrolls.
+          Height = (#games) * 100vh gives one full-screen step per cartridge */}
+      <div ref={trackRef} style={{ height: `${sections * 100}vh` }}>
+        {/* Sticky stage */}
+        <div className="sticky top-0 h-screen w-full bg-[rgb(162,122,188)]/60">
+          <div className="mx-auto flex h-full max-w-6xl flex-col items-center justify-between px-4 py-6">
+            {/* Header */}
+            <h2 className="mt-2 select-none text-center font-black uppercase leading-none tracking-tight text-[#EBD9F7] drop-shadow-[0_2px_0_rgba(0,0,0,0.25)]"
+                style={{ fontSize: "clamp(40px,10vw,120px)" }}>
+              Games That Raised Me
+            </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-[15px] gap-y-[19px]">
-          {/* Sticky SNES + TV in the center (span 8, centered with empty cols) */}
-          <div className="lg:col-span-8 lg:col-start-3">
-            <div className="sticky top-10">
-              {/* TV */}
-              <Frame className="relative w-full overflow-hidden">
-                <div className="relative aspect-[4/2.3] bg-black">
-                  {/* scanlines overlay */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 mix-blend-screen opacity-40"
-                    style={{
-                      backgroundImage:
-                        "linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)",
-                      backgroundSize: "100% 3px",
-                    }}
-                  />
-                  <AnimatePresence mode="wait">
-                    {GAMES.map((g, i) =>
-                      i === active ? (
-                        <motion.div
-                          key={g.id}
-                          initial={{ opacity: 0, scale: 1.01 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.995 }}
-                          transition={{ duration: 0.35, ease: "easeOut" }}
-                          className="absolute inset-0"
-                        >
-                          <Image
-                            src={g.screen}
-                            alt={g.title}
-                            fill
-                            className="object-cover"
-                            priority
-                          />
-                        </motion.div>
-                      ) : null
-                    )}
-                  </AnimatePresence>
-                  <LabelChip>
-                    {GAMES[active].year} • {GAMES[active].platform}
-                  </LabelChip>
-                </div>
-                {/* TV bezel caption */}
-                <div className="border-t-[5px] border-[var(--color-black)] p-3 flex items-center justify-between">
-                  <div className="font-extrabold text-lg">{GAMES[active].title}</div>
-                  <div className="text-xs uppercase opacity-70">TiltPenguin TV</div>
-                </div>
-              </Frame>
-
-              {/* SNES console & slot area */}
-              <motion.div
-                className="mt-[19px]"
-                initial={false}
-                animate={{ rotate: [-0.3, 0, 0.3, 0], transition: { duration: 0.6 } }}
-                key={`shake-${active}`}
-              >
-                <Frame className="relative p-6">
-                  {/* console body */}
-                  <div className="relative mx-auto max-w-[720px]">
-                    <div className="h-40 bg-[var(--paper)] border-[4px] border-[var(--color-black)] rounded-md shadow-[6px_6px_0_rgba(0,0,0,0.75)]" />
-                    {/* slot */}
-                    <div className="absolute left-1/2 -translate-x-1/2 -top-6 w-[320px] h-[26px] bg-black/85 rounded-sm border-[3px] border-[var(--color-black)]" />
-                    {/* buttons */}
-                    <div className="absolute inset-x-0 bottom-4 flex justify-center gap-6">
-                      <div className="h-9 w-16 rounded-sm border-[3px] border-[var(--color-black)] bg-[var(--paper)] shadow-[3px_3px_0_rgba(0,0,0,0.7)]" />
-                      <div className="h-9 w-16 rounded-sm border-[3px] border-[var(--color-black)] bg-[var(--paper)] shadow-[3px_3px_0_rgba(0,0,0,0.7)]" />
-                    </div>
-                    {/* animated cartridge */}
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={GAMES[active].id}
-                        initial={{ y: 120, rotate: 5, opacity: 0.9 }}
-                        animate={{ y: -42, rotate: 0, opacity: 1 }}
-                        exit={{ y: 160, rotate: -4, opacity: 0 }}
-                        transition={{ type: "spring", stiffness: 260, damping: 24 }}
-                        className="absolute left-1/2 -translate-x-1/2 top-0"
-                      >
-                        <Cartridge game={GAMES[active]} />
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-                </Frame>
-              </motion.div>
-
-              {/* teaser box below console */}
-              <Frame className="mt-[19px] p-5">
-                <p className="text-sm md:text-base leading-snug">
-                  {GAMES[active].teaser}
+            {/* Text box (content swaps) */}
+            <div className="relative w-full max-w-4xl">
+              <div className="mx-auto rounded-xl border-4 border-black bg-[#f7f5ef] p-5 shadow-[12px_12px_0_#000] md:p-7">
+                {/* Intro line above the dynamic text */}
+                <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700">
+                  TiltPenguin wouldn’t exist without these:
                 </p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-xs font-semibold uppercase inline-block border-2 border-black px-3 py-1">
-                    Read note
-                  </summary>
-                  <p className="mt-3 text-sm leading-relaxed">{GAMES[active].note}</p>
-                </details>
-              </Frame>
-            </div>
-          </div>
 
-          {/* Scroll steps (invisible on desktop if you want super minimal; here we show them as mini cards) */}
-          <div className="lg:col-span-3 lg:col-start-10 lg:row-start-1">
-            <div className="hidden lg:block sticky top-10">
-              <div className="space-y-[19px]">
-                {GAMES.map((g, i) => (
-                  <button
-                    key={g.id}
-                    onClick={() =>
-                      document.getElementById(`cart-step-${g.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" })
-                    }
-                    className={[
-                      "w-full text-left",
-                      i === active ? "opacity-100" : "opacity-70 hover:opacity-100",
-                    ].join(" ")}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={GAMES[activeTextIdx].key}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
                   >
-                    <Frame className="p-3">
-                      <div className="text-xs uppercase tracking-wide opacity-70">Step {i + 1}</div>
-                      <div className="font-extrabold">{g.title}</div>
-                      <div className="text-xs opacity-70">{g.year} • {g.platform}</div>
-                    </Frame>
-                  </button>
-                ))}
+                    <h3 className="mb-2 font-extrabold uppercase tracking-tight text-neutral-900"
+                        style={{ fontSize: "clamp(18px,3.5vw,28px)" }}>
+                      {GAMES[activeTextIdx].title}
+                    </h3>
+                    <p className="text-[15px] leading-relaxed text-neutral-800 md:text-base">
+                      {GAMES[activeTextIdx].body}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
-          </div>
 
-          {/* actual scroll triggers (mobile-visible) */}
-          <div className="lg:col-span-12 mt-8">
-            {GAMES.map((g) => (
-              <div
-                key={g.id}
-                id={`cart-step-${g.id}`}
-                className="min-h-[75vh] flex items-center justify-center"
-              >
-                <Frame className="w-full max-w-[680px] p-5">
-                  <div className="flex items-center gap-4">
-                    <div className="text-xs uppercase opacity-70">Scroll</div>
-                    <div className="font-extrabold">{g.title}</div>
-                    <div className="ml-auto text-xs opacity-70">{g.year}</div>
-                  </div>
-                  <p className="mt-2 text-sm">{g.teaser}</p>
-                </Frame>
+            {/* Console + Cartridges */}
+            <div className="relative mt-6 w-full max-w-3xl">
+              {/* Console base (static) */}
+              <div className="relative mx-auto w-full">
+                <img
+                  src={CONSOLE.src}
+                  alt="Game console"
+                  className="mx-auto block w-full select-none"
+                  draggable={false}
+                />
+
+                {/* Cartridge slot overlay */}
+                <div
+                  className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2"
+                  style={{
+                    width: CONSOLE.slot.width,
+                    height: CONSOLE.slot.height,
+                    marginTop: CONSOLE.slot.top,
+                    marginLeft: CONSOLE.slot.left,
+                  }}
+                >
+                  {/* Outgoing (current) cartridge: slides left & slightly downscale */}
+                  <motion.img
+                    key={`cur-${GAMES[currentIdx].key}`}
+                    src={GAMES[currentIdx].cartridgeSrc}
+                    alt={GAMES[currentIdx].title}
+                    className="absolute inset-0 m-auto h-full w-auto select-none drop-shadow"
+                    draggable={false}
+                    style={{ transformOrigin: "50% 50%" }}
+                    animate={{
+                      x: t * -220,
+                      scale: 1 - t * 0.06,
+                      opacity: t < 0.9 ? 1 : 1 - (t - 0.9) / 0.1, // fade at the very end
+                    }}
+                    transition={{ type: "tween", ease: "easeOut", duration: 0 }}
+                  />
+
+                  {/* Incoming (next) cartridge: zooms in from right */}
+                  {nextIdx !== currentIdx && (
+                    <motion.img
+                      key={`next-${GAMES[nextIdx].key}`}
+                      src={GAMES[nextIdx].cartridgeSrc}
+                      alt={GAMES[nextIdx].title}
+                      className="absolute inset-0 m-auto h-full w-auto select-none drop-shadow"
+                      draggable={false}
+                      style={{ transformOrigin: "50% 50%" }}
+                      initial={false}
+                      animate={{
+                        x: (1 - t) * 220 - 220, // start right, settle to 0
+                        scale: 0.94 + t * 0.06,
+                        opacity: 0.2 + t * 0.8,
+                      }}
+                      transition={{ type: "tween", ease: "easeOut", duration: 0 }}
+                    />
+                  )}
+                </div>
               </div>
-            ))}
+            </div>
+
+            {/* Spacer to keep sticky content vertically balanced */}
+            <div className="h-6" />
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-/** ------------- cartridge subcomponent ------------- */
-function Cartridge({ game }: { game: Game }) {
-  const label = game.cartColor ?? "#e4e4e4";
-  return (
-    <div className="relative w-[360px]">
-      {/* cart shell */}
-      <div className="h-[150px] rounded-sm border-[5px] border-[var(--color-black)] bg-[var(--paper)] shadow-[6px_6px_0_rgba(0,0,0,0.8)]" />
-      {/* top label */}
-      <div
-        className="absolute left-2 right-2 top-2 h-10 border-[3px] border-[var(--color-black)]"
-        style={{ backgroundColor: label }}
-      />
-      {/* inner sticker */}
-      <div className="absolute left-4 right-4 top-5 h-[78px] bg-[var(--paper)] border-[3px] border-[var(--color-black)] flex items-center px-3">
-        <div className="text-sm leading-tight font-extrabold">
-          {game.title}
-          <div className="text-[10px] opacity-70">{game.year} • {game.platform}</div>
-        </div>
-      </div>
-      {/* notches */}
-      <div className="absolute bottom-2 left-2 right-2 h-3 bg-[var(--paper)] border-[3px] border-[var(--color-black)]" />
-    </div>
   );
 }
