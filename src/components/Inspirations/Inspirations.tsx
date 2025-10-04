@@ -1,18 +1,22 @@
-// app/components/GamesThatRaisedMe.tsx
+// src/components/GamesThatRaisedMe.tsx
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+import { useRef, useState, useMemo } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+  useReducedMotion,
+} from "framer-motion";
 
-// Types
 type Game = {
   key: string;
   title: string;
   body: string;
-  cartridgeSrc: string; // e.g., "/cartridges/minecraft.svg"
+  cartridgeSrc: string;
 };
 
-// ---- PLACEHOLDER DATA (replace cartridgeSrc with your real SVGs) ----
 const GAMES: Game[] = [
   {
     key: "minecraft",
@@ -58,144 +62,195 @@ const GAMES: Game[] = [
   },
 ];
 
-// Tweak these to fit your console art
 const CONSOLE = {
-  src: "/console.svg", // your console SVG
-  // Cartridge slot position relative to the console wrapper.
-  // Adjust width/height/left/top so the cartridge sits perfectly in the slot.
-  slot: { width: 320, height: 180, left: 0, top: -20 }, // px relative to center; tweak freely
+  src: "/console.svg",
+  // Tune these 4 numbers to pixel-lock the cartridge into your slot.
+  // width/height = cartridge art box; offsetX/Y are from CENTER of the console image.
+  slot: {
+    width: 320,
+    height: 180,
+    offsetX: 165,
+    offsetY: -170, // NEGATIVE = move upward (above the console). Adjust to your SVG.
+  },
 };
 
+// how much of each step is used for the swap animation (rest is static)
+const SWAP_WINDOW = 0.22; // 22% near the end of each step
+// total scroll length
+const VH_PER_STEP = 120; // height per transition step
+
 export default function GamesThatRaisedMe() {
+  const prefersReduced = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
 
-  // Scroll progress across the entire track (N-1 transitions)
+  const steps = Math.max(1, GAMES.length - 1);
+  const totalHeightVh = Math.max(VH_PER_STEP * steps, VH_PER_STEP);
+
   const { scrollYProgress } = useScroll({
     target: trackRef,
-    offset: ["start start", "end end"],
+    offset: ["start start", "end start"], // linear 0→1 across track
   });
 
-  const sections = GAMES.length;
-  const [raw, setRaw] = useState(0); // 0..(sections-1)
+  const [raw, setRaw] = useState(0);
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    // tiny epsilon so we never hit an exact 1
-    const val = v * (sections - 1 - 1e-6);
-    setRaw(val < 0 ? 0 : val > sections - 1 ? sections - 1 : val);
+    // map [0..1] → [0..(GAMES.length-1)] and clamp
+    const mapped = v * (GAMES.length - 1);
+    const clamped = Math.min(Math.max(mapped, 0), GAMES.length - 1);
+    setRaw(clamped);
   });
 
-  // Which two cartridges are transitioning right now
-  const baseIndex = Math.floor(raw);
-  const t = raw - baseIndex; // 0..1 within the current transition
+  // step & local progress
+  const base = Math.floor(raw);
+  const segT = raw - base; // 0..1 within this step
 
-  const currentIdx = Math.min(baseIndex, sections - 1);
-  const nextIdx = Math.min(baseIndex + 1, sections - 1);
+  // Only animate in the last SWAP_WINDOW of each step
+  const swapStart = 1 - SWAP_WINDOW;
+  const s =
+    segT <= swapStart ? 0 : (segT - swapStart) / (SWAP_WINDOW || 1e-6); // 0..1 in swap window
 
-  // Which text is shown (switch halfway for a snappy feel)
-  const activeTextIdx = t < 0.5 ? currentIdx : nextIdx;
+  const clampIdx = (i: number) =>
+    Math.min(Math.max(i, 0), GAMES.length - 1);
+
+  const currentIdx = clampIdx(base);
+  const nextIdx = clampIdx(base + 1);
+
+  // keep text static, switch close to the end of the swap
+  const activeTextIdx = clampIdx(s < 0.6 ? currentIdx : nextIdx);
+  const activeGame = GAMES[activeTextIdx] ?? GAMES[0];
+
+  // slide distance proportional to slot width
+  const SLIDE = useMemo(() => CONSOLE.slot.width * 0.9, []);
+  const pulse = s; // 0→1 as it snaps in
 
   return (
-    <section id="games-that-raised-me" className="relative w-full">
-      {/* The scroll track defines how long the user scrolls.
-          Height = (#games) * 100vh gives one full-screen step per cartridge */}
-      <div ref={trackRef} style={{ height: `${sections * 100}vh` }}>
-        {/* Sticky stage */}
+    <section id="games-that-raised-me" className="relative">
+      <div ref={trackRef} style={{ height: `${totalHeightVh}vh` }}>
         <div className="sticky top-0 h-screen w-full bg-[rgb(162,122,188)]/60">
-          <div className="mx-auto flex h-full max-w-6xl flex-col items-center justify-between px-4 py-6">
-            {/* Header */}
-            <h2 className="mt-2 select-none text-center font-black uppercase leading-none tracking-tight text-[#EBD9F7] drop-shadow-[0_2px_0_rgba(0,0,0,0.25)]"
-                style={{ fontSize: "clamp(40px,10vw,120px)" }}>
+          <div className="mx-auto flex h-full max-w-[1200px] flex-col items-center justify-between px-4 py-6">
+            {/* Single-line header */}
+            <h2
+              className="mt-1 select-none whitespace-nowrap text-center font-black uppercase leading-none tracking-tight text-[#EBD9F7] drop-shadow-[0_2px_0_rgba(0,0,0,0.25)]"
+              style={{ fontSize: "clamp(44px,8vw,96px)" }}
+            >
               Games That Raised Me
             </h2>
 
-            {/* Text box (content swaps) */}
-            <div className="relative w-full max-w-4xl">
-              <div className="mx-auto rounded-xl border-4 border-black bg-[#f7f5ef] p-5 shadow-[12px_12px_0_#000] md:p-7">
-                {/* Intro line above the dynamic text */}
+            {/* Text box */}
+            <div className="w-full">
+              <div className="mx-auto max-w-4xl rounded-xl border-4 border-black bg-[#f7f5ef] p-5 shadow-[12px_12px_0_#000] md:p-7">
                 <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700">
                   TiltPenguin wouldn’t exist without these:
                 </p>
 
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={GAMES[activeTextIdx].key}
+                    key={activeGame.key}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    transition={{ duration: 0.28, ease: "easeOut" }}
                   >
-                    <h3 className="mb-2 font-extrabold uppercase tracking-tight text-neutral-900"
-                        style={{ fontSize: "clamp(18px,3.5vw,28px)" }}>
-                      {GAMES[activeTextIdx].title}
+                    <h3
+                      className="mb-2 font-extrabold uppercase tracking-tight text-neutral-900"
+                      style={{ fontSize: "clamp(18px,3.2vw,28px)" }}
+                    >
+                      {activeGame.title}
                     </h3>
                     <p className="text-[15px] leading-relaxed text-neutral-800 md:text-base">
-                      {GAMES[activeTextIdx].body}
+                      {activeGame.body}
                     </p>
                   </motion.div>
                 </AnimatePresence>
               </div>
             </div>
 
-            {/* Console + Cartridges */}
-            <div className="relative mt-6 w-full max-w-3xl">
-              {/* Console base (static) */}
-              <div className="relative mx-auto w-full">
-                <img
-                  src={CONSOLE.src}
-                  alt="Game console"
-                  className="mx-auto block w-full select-none"
+            {/* Console & cartridges */}
+            <div className="relative mt-40 w-full max-w-3xl">
+              {/* CARTRIDGE LAYER — vertically above the console, z-index behind */}
+              <div
+                className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2"
+                style={{
+                  width: CONSOLE.slot.width,
+                  height: CONSOLE.slot.height,
+                  transform: `translate(-50%, -50%) translate(${CONSOLE.slot.offsetX}px, ${CONSOLE.slot.offsetY}px)`,
+                }}
+              >
+                {/* Outgoing (current) — static unless we're in swap window */}
+                <motion.img
+                  key={`cur-${GAMES[currentIdx].key}`}
+                  src={GAMES[currentIdx].cartridgeSrc}
+                  alt={GAMES[currentIdx].title}
+                  className="absolute inset-0 m-auto h-full w-auto select-none"
                   draggable={false}
+                  style={{ transformOrigin: "50% 50%" }}
+                  animate={
+                    prefersReduced
+                      ? { x: 0, opacity: 1, scale: 1 }
+                      : {
+                          x: -SLIDE * s,
+                          opacity: s < 0.9 ? 1 : 1 - (s - 0.9) / 0.1,
+                          scale: 1 - s * 0.04,
+                        }
+                  }
+                  transition={{ type: "tween", ease: "easeOut", duration: 0 }}
                 />
 
-                {/* Cartridge slot overlay */}
-                <div
-                  className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2"
-                  style={{
-                    width: CONSOLE.slot.width,
-                    height: CONSOLE.slot.height,
-                    marginTop: CONSOLE.slot.top,
-                    marginLeft: CONSOLE.slot.left,
-                  }}
-                >
-                  {/* Outgoing (current) cartridge: slides left & slightly downscale */}
+                {/* Incoming (next) — hidden until swap starts */}
+                {nextIdx !== currentIdx && (
                   <motion.img
-                    key={`cur-${GAMES[currentIdx].key}`}
-                    src={GAMES[currentIdx].cartridgeSrc}
-                    alt={GAMES[currentIdx].title}
-                    className="absolute inset-0 m-auto h-full w-auto select-none drop-shadow"
+                    key={`next-${GAMES[nextIdx].key}`}
+                    src={GAMES[nextIdx].cartridgeSrc}
+                    alt={GAMES[nextIdx].title}
+                    className="absolute inset-0 m-auto h-full w-auto select-none"
                     draggable={false}
                     style={{ transformOrigin: "50% 50%" }}
-                    animate={{
-                      x: t * -220,
-                      scale: 1 - t * 0.06,
-                      opacity: t < 0.9 ? 1 : 1 - (t - 0.9) / 0.1, // fade at the very end
-                    }}
+                    initial={false}
+                    animate={
+                      prefersReduced
+                        ? { x: 0, opacity: 1, scale: 1 }
+                        : {
+                            x: SLIDE * (1 - s), // start off to the right → center
+                            opacity: s === 0 ? 0 : 0.2 + s * 0.8,
+                            scale: 0.96 + s * 0.04,
+                          }
+                    }
                     transition={{ type: "tween", ease: "easeOut", duration: 0 }}
                   />
+                )}
 
-                  {/* Incoming (next) cartridge: zooms in from right */}
-                  {nextIdx !== currentIdx && (
-                    <motion.img
-                      key={`next-${GAMES[nextIdx].key}`}
-                      src={GAMES[nextIdx].cartridgeSrc}
-                      alt={GAMES[nextIdx].title}
-                      className="absolute inset-0 m-auto h-full w-auto select-none drop-shadow"
-                      draggable={false}
-                      style={{ transformOrigin: "50% 50%" }}
-                      initial={false}
-                      animate={{
-                        x: (1 - t) * 220 - 220, // start right, settle to 0
-                        scale: 0.94 + t * 0.06,
-                        opacity: 0.2 + t * 0.8,
-                      }}
-                      transition={{ type: "tween", ease: "easeOut", duration: 0 }}
-                    />
-                  )}
-                </div>
+                {/* Slot glow pulse as it inserts */}
+                {!prefersReduced && (
+                  <motion.div
+                    className="absolute inset-0 rounded-md"
+                    style={{
+                      WebkitMaskImage:
+                        "radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.6))",
+                      maskImage:
+                        "radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.6))",
+                      background:
+                        "radial-gradient(closest-side, rgba(255,255,255,0.6), rgba(255,255,255,0))",
+                    }}
+                    animate={{ opacity: s }}
+                  />
+                )}
               </div>
+
+              {/* CONSOLE on top (z-10), slight bounce at the end of swap */}
+              <motion.img
+                src={CONSOLE.src}
+                alt="Game console"
+                className="relative z-10 mx-auto block w-full select-none"
+                draggable={false}
+                animate={
+                  prefersReduced
+                    ? { y: 0, scale: 1 }
+                    : { y: -4 * s, scale: 1 + 0.01 * s }
+                }
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
             </div>
 
-            {/* Spacer to keep sticky content vertically balanced */}
-            <div className="h-6" />
+            <div className="h-4" />
           </div>
         </div>
       </div>
