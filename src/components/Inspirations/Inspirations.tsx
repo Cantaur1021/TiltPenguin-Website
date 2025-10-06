@@ -64,20 +64,17 @@ const GAMES: Game[] = [
 
 const CONSOLE = {
   src: "/console.svg",
-  // Tune these 4 numbers to pixel-lock the cartridge into your slot.
-  // width/height = cartridge art box; offsetX/Y are from CENTER of the console image.
+  // Tune to pixel-lock the cartridge into your SVG slot
   slot: {
     width: 320,
     height: 180,
     offsetX: 165,
-    offsetY: -170, // NEGATIVE = move upward (above the console). Adjust to your SVG.
+    offsetY: -100, // moved DOWN (less negative) to sit well below the text
   },
 };
 
-// how much of each step is used for the swap animation (rest is static)
-const SWAP_WINDOW = 0.22; // 22% near the end of each step
-// total scroll length
-const VH_PER_STEP = 120; // height per transition step
+const SWAP_WINDOW = 0.22;
+const VH_PER_STEP = 120;
 
 export default function GamesThatRaisedMe() {
   const prefersReduced = useReducedMotion();
@@ -88,56 +85,62 @@ export default function GamesThatRaisedMe() {
 
   const { scrollYProgress } = useScroll({
     target: trackRef,
-    offset: ["start start", "end start"], // linear 0→1 across track
+    offset: ["start start", "end start"],
   });
 
   const [raw, setRaw] = useState(0);
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    // map [0..1] → [0..(GAMES.length-1)] and clamp
     const mapped = v * (GAMES.length - 1);
     const clamped = Math.min(Math.max(mapped, 0), GAMES.length - 1);
     setRaw(clamped);
   });
 
-  // step & local progress
   const base = Math.floor(raw);
-  const segT = raw - base; // 0..1 within this step
+  const segT = raw - base;
 
-  // Only animate in the last SWAP_WINDOW of each step
   const swapStart = 1 - SWAP_WINDOW;
-  const s =
-    segT <= swapStart ? 0 : (segT - swapStart) / (SWAP_WINDOW || 1e-6); // 0..1 in swap window
+  const s = segT <= swapStart ? 0 : (segT - swapStart) / (SWAP_WINDOW || 1e-6);
 
-  const clampIdx = (i: number) =>
-    Math.min(Math.max(i, 0), GAMES.length - 1);
-
+  const clampIdx = (i: number) => Math.min(Math.max(i, 0), GAMES.length - 1);
   const currentIdx = clampIdx(base);
   const nextIdx = clampIdx(base + 1);
 
-  // keep text static, switch close to the end of the swap
   const activeTextIdx = clampIdx(s < 0.6 ? currentIdx : nextIdx);
   const activeGame = GAMES[activeTextIdx] ?? GAMES[0];
 
-  // slide distance proportional to slot width
+  // slide distance for cartridge swap
   const SLIDE = useMemo(() => CONSOLE.slot.width * 0.9, []);
-  const pulse = s; // 0→1 as it snaps in
 
   return (
     <section id="games-that-raised-me" className="relative">
       <div ref={trackRef} style={{ height: `${totalHeightVh}vh` }}>
-        <div className="sticky top-0 h-screen w-full bg-[rgb(162,122,188)]/60">
-          <div className="mx-auto flex h-full max-w-[1200px] flex-col items-center justify-between px-4 py-6">
-            {/* Single-line header */}
+        <div className="sticky top-0 h-[100svh] w-full bg-[rgb(162,122,188)]/60">
+          <div
+            className="
+              mx-auto h-full max-w-[1200px]
+              grid grid-rows-[auto_1fr_auto] items-center gap-6 md:gap-8
+              px-4 py-4 md:py-6
+            "
+          >
+            {/* Header */}
             <h2
-              className="mt-1 select-none whitespace-nowrap text-center font-black uppercase leading-none tracking-tight text-[#EBD9F7] drop-shadow-[0_2px_0_rgba(0,0,0,0.25)]"
-              style={{ fontSize: "clamp(44px,8vw,96px)" }}
+              className="
+                mt-1 mb-1 md:mb-2
+                text-center leading-[0.82] tracking-[0.04em]
+                [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
+                text-[2.4rem] md:text-[4.2rem] lg:text-[7.2rem]
+              "
+              style={{ color: "#FFE3E3", fontFamily: "'Bebas Neue', sans-serif" }}
             >
-              Games That Raised Me
+              GAMES THAT RAISED ME
             </h2>
 
-            {/* Text box */}
-            <div className="w-full">
-              <div className="mx-auto max-w-4xl rounded-xl border-4 border-black bg-[#f7f5ef] p-5 shadow-[12px_12px_0_#000] md:p-7">
+            {/* Text box (row 2) */}
+            <div className="w-full min-h-0 relative z-20 ">
+              <div
+                className="mx-auto max-w-4xl rounded-xl border-4 border-black bg-[#f7f5ef] p-5 shadow-[12px_12px_0_#000] md:p-7
+                  max-h-[48svh] overflow-auto"
+              >
                 <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700">
                   TiltPenguin wouldn’t exist without these:
                 </p>
@@ -164,93 +167,104 @@ export default function GamesThatRaisedMe() {
               </div>
             </div>
 
-            {/* Console & cartridges */}
-            <div className="relative mt-40 w-full max-w-3xl">
-              {/* CARTRIDGE LAYER — vertically above the console, z-index behind */}
+            {/* Console group (row 3) — smaller, centered, and well below the text */}
+            <div className="relative z-10 w-full flex justify-center">
+              {/* scale wrapper to shrink console + cartridge together */}
               <div
-                className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2"
+                className="relative"
                 style={{
-                  width: CONSOLE.slot.width,
-                  height: CONSOLE.slot.height,
-                  transform: `translate(-50%, -50%) translate(${CONSOLE.slot.offsetX}px, ${CONSOLE.slot.offsetY}px)`,
+                  width: "min(700px, 100%)",
+                  transform: "translateY(clamp(16px, 13vh, 90px)) scale(0.8)",
+                  transformOrigin: "top center",
                 }}
               >
-                {/* Outgoing (current) — static unless we're in swap window */}
-                <motion.img
-                  key={`cur-${GAMES[currentIdx].key}`}
-                  src={GAMES[currentIdx].cartridgeSrc}
-                  alt={GAMES[currentIdx].title}
-                  className="absolute inset-0 m-auto h-full w-auto select-none"
-                  draggable={false}
-                  style={{ transformOrigin: "50% 50%" }}
-                  animate={
-                    prefersReduced
-                      ? { x: 0, opacity: 1, scale: 1 }
-                      : {
-                          x: -SLIDE * s,
-                          opacity: s < 0.9 ? 1 : 1 - (s - 0.9) / 0.1,
-                          scale: 1 - s * 0.04,
-                        }
-                  }
-                  transition={{ type: "tween", ease: "easeOut", duration: 0 }}
-                />
-
-                {/* Incoming (next) — hidden until swap starts */}
-                {nextIdx !== currentIdx && (
+                {/* CARTRIDGE LAYER */}
+                <div
+                  className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2"
+                  style={{
+                    width: CONSOLE.slot.width,
+                    height: CONSOLE.slot.height,
+                    transform: `translate(-50%, -50%) translate(${CONSOLE.slot.offsetX}px, ${CONSOLE.slot.offsetY}px)`,
+                  }}
+                >
+                  {/* Outgoing (current) */}
                   <motion.img
-                    key={`next-${GAMES[nextIdx].key}`}
-                    src={GAMES[nextIdx].cartridgeSrc}
-                    alt={GAMES[nextIdx].title}
+                    key={`cur-${GAMES[currentIdx].key}`}
+                    src={GAMES[currentIdx].cartridgeSrc}
+                    alt={GAMES[currentIdx].title}
                     className="absolute inset-0 m-auto h-full w-auto select-none"
                     draggable={false}
                     style={{ transformOrigin: "50% 50%" }}
-                    initial={false}
                     animate={
                       prefersReduced
                         ? { x: 0, opacity: 1, scale: 1 }
                         : {
-                            x: SLIDE * (1 - s), // start off to the right → center
-                            opacity: s === 0 ? 0 : 0.2 + s * 0.8,
-                            scale: 0.96 + s * 0.04,
+                            x: -SLIDE * s,
+                            opacity: s < 0.9 ? 1 : 1 - (s - 0.9) / 0.1,
+                            scale: 1 - s * 0.04,
                           }
                     }
                     transition={{ type: "tween", ease: "easeOut", duration: 0 }}
                   />
-                )}
 
-                {/* Slot glow pulse as it inserts */}
-                {!prefersReduced && (
-                  <motion.div
-                    className="absolute inset-0 rounded-md"
-                    style={{
-                      WebkitMaskImage:
-                        "radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.6))",
-                      maskImage:
-                        "radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.6))",
-                      background:
-                        "radial-gradient(closest-side, rgba(255,255,255,0.6), rgba(255,255,255,0))",
-                    }}
-                    animate={{ opacity: s }}
-                  />
-                )}
+                  {/* Incoming (next) */}
+                  {nextIdx !== currentIdx && (
+                    <motion.img
+                      key={`next-${GAMES[nextIdx].key}`}
+                      src={GAMES[nextIdx].cartridgeSrc}
+                      alt={GAMES[nextIdx].title}
+                      className="absolute inset-0 m-auto h-full w-auto select-none"
+                      draggable={false}
+                      style={{ transformOrigin: "50% 50%" }}
+                      initial={false}
+                      animate={
+                        prefersReduced
+                          ? { x: 0, opacity: 1, scale: 1 }
+                          : {
+                              x: SLIDE * (1 - s),
+                              opacity: s === 0 ? 0 : 0.2 + s * 0.8,
+                              scale: 0.96 + s * 0.04,
+                            }
+                      }
+                      transition={{ type: "tween", ease: "easeOut", duration: 0 }}
+                    />
+                  )}
+
+                  {/* Slot glow */}
+                  {!prefersReduced && (
+                    <motion.div
+                      className="absolute inset-0 rounded-md"
+                      style={{
+                        WebkitMaskImage:
+                          "radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.6))",
+                        maskImage:
+                          "radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.6))",
+                        background:
+                          "radial-gradient(closest-side, rgba(255,255,255,0.6), rgba(255,255,255,0))",
+                      }}
+                      animate={{ opacity: s }}
+                    />
+                  )}
+                </div>
+
+                {/* CONSOLE IMAGE */}
+                <motion.img
+                  src={CONSOLE.src}
+                  alt="Game console"
+                  className="relative z-10 mx-auto block w-full select-none"
+                  draggable={false}
+                  style={{ maxHeight: "28svh" }} // smaller cap so plenty of breathing room
+                  animate={
+                    prefersReduced
+                      ? { y: 0, scale: 1 }
+                      : { y: -4 * s, scale: 1 + 0.01 * s }
+                  }
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
               </div>
-
-              {/* CONSOLE on top (z-10), slight bounce at the end of swap */}
-              <motion.img
-                src={CONSOLE.src}
-                alt="Game console"
-                className="relative z-10 mx-auto block w-full select-none"
-                draggable={false}
-                animate={
-                  prefersReduced
-                    ? { y: 0, scale: 1 }
-                    : { y: -4 * s, scale: 1 + 0.01 * s }
-                }
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              />
             </div>
 
-            <div className="h-4" />
+            <div className="h-2" />
           </div>
         </div>
       </div>
