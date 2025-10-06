@@ -1,5 +1,6 @@
 // components/GameBoy.tsx
 import React from "react";
+import Image from "next/image";
 
 type Project = {
   id: string;
@@ -39,13 +40,17 @@ export default function GameBoy({
             {project.title}
           </div>
 
-          {project.screenImage && (
-            <img
+            {project.screenImage && (
+            <Image
               src={project.screenImage}
               alt=""
-              className="absolute inset-0 m-auto max-h-[72%] max-w-[86%] object-contain"
+              fill
+              className="object-contain max-h-[72%] max-w-[86%] m-auto"
+              style={{ position: "absolute", inset: 0 }}
+              sizes="(max-width: 364px) 100vw, 364px"
+              priority
             />
-          )}
+            )}
         </div>
 
         {/* Controls */}

@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import HeroSection from "../components/Hero/HeroSection";
 import AboutSection from "../components/About/AboutSection";
 import UpcomingProjectsSection from "../components/UpcomingProjects/UpcomingProjectsSection";
+import AccentSection from "../components/AboutMe/AboutMe";
 
 const Home: NextPage = () => {
   return (
@@ -10,6 +11,7 @@ const Home: NextPage = () => {
       <HeroSection />
       <AboutSection />
       <UpcomingProjectsSection />
+      <AccentSection/>
     </main>
   );
 };

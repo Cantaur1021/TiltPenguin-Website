@@ -49,10 +49,10 @@ function CardShell({
       : "border-[3px]";
   const shadowCls =
     border === 5
-      ? "shadow-[9px_9px_0_var(--color-black)]"
+      ? "shadow-[7px_7px_0_var(--color-black)]"
       : border === 4
-      ? "shadow-[8px_8px_0_var(--color-black)]"
-      : "shadow-[6px_6px_0_var(--color-black)]";
+      ? "shadow-[6px_6px_0_var(--color-black)]"
+      : "shadow-[4px_4px_0_var(--color-black)]";
 
   return (
     <div
@@ -79,7 +79,7 @@ function CardShell({
       </h4>
       <p
         className={[
-          "m-0 text-[0.95rem] md:text-[1rem] leading-[1.35] text-[var(--color-black)]",
+          "m-0 text-[0.95rem] md:text-[1rem] leading-[1.35] font-bo text-[var(--color-black)]",
           center ? "text-center" : "",
         ].join(" ")}
         style={{ fontFamily: "Poppins, sans-serif" }}

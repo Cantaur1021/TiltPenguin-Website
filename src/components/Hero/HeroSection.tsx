@@ -50,10 +50,10 @@ const HeroSection: React.FC = () => {
         </h1>
 
         <div className="mx-auto my-8 max-w-[600px] text-center md:my-6 md:max-w-[400px] sm:px-4">
-          <p className="m-1 text-base leading-6 text-black md:text-sm">
+          <p className="m-1 text-base leading-6 text-black md:text-sm font-bold">
             A scrappy solo game studio powered by delusion.
           </p>
-          <p className="m-1 text-base leading-6 text-black md:text-sm">
+          <p className="m-1 text-base leading-6 text-black md:text-sm font-bold">
             Everything here is open source and free, so I can break things and you can fix them{" "}
             <span className="align-[0.1em] text-m">😊</span>
           </p>
