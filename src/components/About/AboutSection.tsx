@@ -276,22 +276,21 @@ const AboutSection: React.FC = () => {
       "
     >
       {/* Title with animation */}
-      <motion.h2
-        className="
-          mt-3 mb-1 md:mb-2
-          text-center leading-[0.82] tracking-[0.04em]
-          [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
-          text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem]
-        "
-        style={{ color: "#FFE68B", fontFamily: "'Bebas Neue', sans-serif" }}
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        whileInView={{
-          scale: [1, 1.02, 1],
-          transition: { duration: 0.5, delay: 0.2 }
-        }}
-      >
+       <motion.h2
+                className="mt-3 mb-1 md:mb-2 text-center leading-[0.82] tracking-[0.04em]
+                           [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
+                           text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem]"
+                style={{ color: "#FFE68B", fontFamily: "'Bebas Neue', sans-serif" }}
+                initial={{ opacity: 0, y: -30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                whileHover={{ 
+                  scale: 1.02,
+                  rotate: [-0.5, 0.5, 0],
+                  transition: { duration: 0.3 }
+                }}
+              >
         ABOUT TILTPENGUIN
       </motion.h2>
 
