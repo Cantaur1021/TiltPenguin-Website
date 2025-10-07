@@ -141,7 +141,7 @@ export default function GamesThatRaisedMe() {
                 className="mx-auto max-w-4xl rounded-xl border-4 border-black bg-[#f7f5ef] p-5 shadow-[12px_12px_0_#000] md:p-7
                   max-h-[48svh] overflow-auto"
               >
-                <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700">
+                <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700" style={{ fontFamily: "Poppins, sans-serif" }}>
                   TiltPenguin wouldn’t exist without these:
                 </p>
 
@@ -154,12 +154,12 @@ export default function GamesThatRaisedMe() {
                     transition={{ duration: 0.28, ease: "easeOut" }}
                   >
                     <h3
-                      className="mb-2 font-extrabold uppercase tracking-tight text-neutral-900"
-                      style={{ fontSize: "clamp(18px,3.2vw,28px)" }}
+                      className="m-0 text-left text-[2.1rem] md:text-[2.4rem] lg:text-[2.65rem] leading-[1.05] uppercase"
+                style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                     >
                       {activeGame.title}
                     </h3>
-                    <p className="text-[15px] leading-relaxed text-neutral-800 md:text-base">
+                    <p className="m-0 text-sm leading-6.5 text-neutral-800" style={{ fontFamily: "Poppins, sans-serif" }}>
                       {activeGame.body}
                     </p>
                   </motion.div>
