@@ -113,7 +113,7 @@ export default function GamesThatRaisedMe() {
 
   return (
     <section id="games-that-raised-me" className="relative">
-      <div ref={trackRef} style={{ height: `${totalHeightVh}vh` }}>
+      <div ref={trackRef} style={{ height: `${totalHeightVh}vh` }} className="bg-[rgb(162,122,188)]">
         <div className="sticky top-0 h-[100svh] w-full bg-[rgb(162,122,188)]/60">
           <div
             className="
