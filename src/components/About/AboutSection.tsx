@@ -227,7 +227,7 @@ const AboutSection: React.FC = () => {
         relative flex flex-col items-stretch
         border-t-[5px] border-b-[5px] border-[var(--color-black)]
         bg-[var(--color-yellow)]
-        px-0 
+        px-0 z-10
       "
     >
       {/* Title — same spacing/style as UPCOMING PROJECTS */}

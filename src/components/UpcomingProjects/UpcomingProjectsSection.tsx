@@ -116,9 +116,9 @@ const UpcomingProjectsSection: React.FC = () => {
 
   return (
     <section
-      className="relative w-full overflow-hidden border-y-[5px] border-black"
+      className="relative w-full overflow-hidden border-y-[5px] border-black z-10"
       style={{ backgroundColor: "#5C93E7" }}
-      aria-live="polite"
+      aria-live="polite" 
     >
       {/* stronger, tighter grid */}
       <div

@@ -112,9 +112,9 @@ export default function GamesThatRaisedMe() {
   const SLIDE = useMemo(() => CONSOLE.slot.width * 0.9, []);
 
   return (
-    <section id="games-that-raised-me" className="relative">
-      <div ref={trackRef} style={{ height: `${totalHeightVh}vh` }} className="bg-[rgb(162,122,188)]">
-        <div className="sticky top-0 h-[100svh] w-full bg-[rgb(162,122,188)]/60">
+ <section id="games-that-raised-me" className="relative z-10 bg-[rgb(162,122,188)]">
+      <div ref={trackRef} style={{ height: `${totalHeightVh}vh` }} className="bg-[rgb(162,122,188)] relative z-10">
+        <div className="sticky top-0 h-[100svh] w-full bg-[rgb(162,122,188)]">
           <div
             className="
               mx-auto h-full max-w-[1200px]

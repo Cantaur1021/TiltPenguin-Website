@@ -22,7 +22,7 @@ const HeroSection: React.FC = () => {
 
   return (
     <section
-      className="relative min-h-screen w-full overflow-hidden
+      className="relative z-10 min-h-screen w-full overflow-hidden
                  bg-[linear-gradient(to_bottom,#c2eee1_25%,#fefaef_100%)]"
       style={{ fontFamily: "Poppins, sans-serif" }}
     >
