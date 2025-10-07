@@ -1,7 +1,8 @@
 // components/AboutSection.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DndContext,
   closestCenter,
@@ -35,11 +36,13 @@ function CardShell({
   className = "",
   center = false,
   border = 4,
+  isBeingDragged = false,
 }: {
   item: CardItem;
   className?: string;
   center?: boolean;
   border?: 3 | 4 | 5;
+  isBeingDragged?: boolean;
 }) {
   const borderCls =
     border === 5
@@ -55,7 +58,7 @@ function CardShell({
       : "shadow-[4px_4px_0_var(--color-black)]";
 
   return (
-    <div
+    <motion.div
       className={[
         "w-full",
         // Taller / squarer cards to match your original design
@@ -66,6 +69,14 @@ function CardShell({
         shadowCls,
         className,
       ].join(" ")}
+      animate={isBeingDragged ? {
+        rotate: [0, -2, 2, -1, 1, 0],
+        transition: {
+          duration: 0.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }
+      } : {}}
     >
       <h4
         className={[
@@ -86,7 +97,7 @@ function CardShell({
       >
         {item.description}
       </p>
-    </div>
+    </motion.div>
   );
 }
 
@@ -95,10 +106,12 @@ function SortableCard({
   item,
   disableHover,
   className = "",
+  index,
 }: {
   item: CardItem;
   disableHover: boolean;
   className?: string;
+  index: number;
 }) {
   const {
     attributes,
@@ -118,7 +131,7 @@ function SortableCard({
   };
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -133,6 +146,25 @@ function SortableCard({
           : "",
         className,
       ].join(" ")}
+      initial={{ opacity: 0, y: 40, rotate: -5 }}
+      whileInView={{ 
+        opacity: 1, 
+        y: 0, 
+        rotate: 0,
+        transition: {
+          delay: index * 0.1,
+          duration: 0.5,
+          ease: [0.25, 0.1, 0.25, 1]
+        }
+      }}
+      viewport={{ once: true, amount: 0.3 }}
+      whileHover={!isDragging ? {
+        rotate: [0, -1, 1, 0],
+        transition: {
+          duration: 0.3,
+          ease: "easeInOut"
+        }
+      } : {}}
     >
       <CardShell
         item={item}
@@ -146,7 +178,7 @@ function SortableCard({
             : ""
         }
       />
-    </div>
+    </motion.div>
   );
 }
 
@@ -175,10 +207,18 @@ const AboutSection: React.FC = () => {
       id: "bugs-welcome",
       title: "BUGS WELCOME",
       description:
-        "Big visions start small and scrappy — and honestly, they’ll probably stay that way. But that’s the charm of it (I think).",
+        "Big visions start small and scrappy — and honestly, they'll probably stay that way. But that's the charm of it (I think).",
     },
   ]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [dragCount, setDragCount] = useState(0);
+  const [showHint, setShowHint] = useState(false);
+
+  // Show hint after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => setShowHint(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -188,9 +228,13 @@ const AboutSection: React.FC = () => {
     useSensor(KeyboardSensor)
   );
 
-  const onDragStart = ({ active }: DragStartEvent) =>
+  const onDragStart = ({ active }: DragStartEvent) => {
     setActiveId(String(active.id));
+    setShowHint(false);
+  };
+  
   const onDragCancel = (_e: DragCancelEvent) => setActiveId(null);
+  
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) {
       setActiveId(null);
@@ -200,6 +244,7 @@ const AboutSection: React.FC = () => {
     const newIndex = items.findIndex((i) => i.id === over.id);
     setItems((prev) => arrayMove(prev, oldIndex, newIndex));
     setActiveId(null);
+    setDragCount(prev => prev + 1);
   };
 
   const dropAnimation: DropAnimation = {
@@ -230,8 +275,8 @@ const AboutSection: React.FC = () => {
         px-0 z-10
       "
     >
-      {/* Title — same spacing/style as UPCOMING PROJECTS */}
-      <h2
+      {/* Title with animation */}
+      <motion.h2
         className="
           mt-3 mb-1 md:mb-2
           text-center leading-[0.82] tracking-[0.04em]
@@ -239,9 +284,16 @@ const AboutSection: React.FC = () => {
           text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem]
         "
         style={{ color: "#FFE68B", fontFamily: "'Bebas Neue', sans-serif" }}
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        whileInView={{
+          scale: [1, 1.02, 1],
+          transition: { duration: 0.5, delay: 0.2 }
+        }}
       >
         ABOUT TILTPENGUIN
-      </h2>
+      </motion.h2>
 
       {/* Two columns – edge-to-edge, tight gaps */}
       <div
@@ -253,21 +305,30 @@ const AboutSection: React.FC = () => {
         "
       >
         {/* LEFT — main copy block, taller to balance right side */}
-        <div className="lg:h-full">
+        <motion.div 
+          className="lg:h-full"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+        >
           <div
             className="
               h-full w-full border-[5px] border-[var(--color-black)] bg-[#eeece4]
               p-5 md:p-6 shadow-[8px_8px_0_var(--color-black)] flex items-center
               lg:min-h-[36rem] md:min-h-[30rem] min-h-[26rem]
+              transition-all duration-300 hover:shadow-[10px_10px_0_var(--color-black)]
             "
           >
-            <p
+            <motion.p
               className="
                 m-0 text-center
                 text-[1.25rem] md:text-[1.75rem] lg:text-[2.25rem]
                 leading-[1.08] tracking-[0.01em] text-[var(--color-black)]
               "
               style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
             >
               TILTPENGUIN IS A BOOTSTRAP GAME STUDIO RUN BY EXACTLY ONE PERSON.
               <br />
@@ -279,12 +340,17 @@ const AboutSection: React.FC = () => {
               EVERYTHING MADE HERE IS FREE AND OPEN BY DESIGN, BECAUSE THINGS
               ARE ALWAYS MORE FUN WHEN YOU HAVE A 20 SOMETHING YEAR OLD YOU CAN
               LAUGH AT.
-            </p>
+            </motion.p>
           </div>
-        </div>
+        </motion.div>
 
         {/* RIGHT — principles */}
-        <div className="lg:h-full">
+        <motion.div 
+          className="lg:h-full relative"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        >
           {/* Mobile heading */}
           <h3
             className="
@@ -296,6 +362,59 @@ const AboutSection: React.FC = () => {
           >
             PRINCIPLES
           </h3>
+
+          {/* Floating hint for drag and drop */}
+          <AnimatePresence>
+            {showHint && !activeId && dragCount === 0 && (
+              <motion.div
+                className="absolute -top-2 right-0 z-30 hidden md:block"
+                initial={{ opacity: 0, y: -10, rotate: -5 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0, 
+                  rotate: [0, 2, -2, 0],
+                  transition: {
+                    opacity: { duration: 0.3 },
+                    y: { duration: 0.3 },
+                    rotate: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }
+                  }
+                }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                <div className="bg-[#FFE68B] border-2 border-black px-3 py-1 shadow-[3px_3px_0_#000]">
+                  <p className="text-xs font-bold text-black" style={{ fontFamily: "Poppins, sans-serif" }}>
+                    DRAG TO REARRANGE →
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Sarcastic comment after dragging */}
+          <AnimatePresence>
+            {dragCount > 0 && (
+              <motion.div
+                className="absolute -top-2 right-0 z-30 hidden md:block"
+                initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="bg-[#FFE68B] border-2 border-black px-3 py-1 shadow-[3px_3px_0_#000]">
+                  <p className="text-xs font-bold text-black" style={{ fontFamily: "Poppins, sans-serif" }}>
+                    {dragCount === 1 && "YEP, THEY'RE FLEXIBLE"}
+                    {dragCount === 2 && "VERY PRINCIPLED, I KNOW"}
+                    {dragCount === 3 && "CONSISTENCY IS OVERRATED"}
+                    {dragCount > 3 && "OK YOU CAN STOP NOW"}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <DndContext
             sensors={sensors}
@@ -311,28 +430,30 @@ const AboutSection: React.FC = () => {
             >
               {/* Mobile/Tablet */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:hidden">
-                {items.map((it) => (
+                {items.map((it, idx) => (
                   <SortableCard
                     key={it.id}
                     item={it}
                     disableHover={disableHover}
+                    index={idx}
                   />
                 ))}
               </div>
 
               {/* Desktop row 1 */}
               <div className="hidden lg:grid grid-cols-2 gap-3">
-                {firstRow.map((it) => (
+                {firstRow.map((it, idx) => (
                   <SortableCard
                     key={it.id}
                     item={it}
                     disableHover={disableHover}
+                    index={idx}
                   />
                 ))}
               </div>
 
-              {/* Mid heading (desktop) */}
-              <h3
+              {/* Mid heading (desktop) with wobble */}
+              <motion.h3
                 className="
                   hidden lg:block my-2 text-center leading-[0.82] tracking-[0.04em]
                   [text-shadow:2px_2px_0_var(--color-black),3px_3px_0_var(--color-black)]
@@ -342,17 +463,40 @@ const AboutSection: React.FC = () => {
                   color: "#FFE68B",
                   fontFamily: "'Bebas Neue', sans-serif",
                 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  rotate: dragCount > 0 ? [0, -1, 1, 0] : 0
+                }}
+                transition={{ 
+                  duration: 0.5,
+                  rotate: {
+                    duration: 0.3,
+                    ease: "easeInOut"
+                  }
+                }}
               >
                 PRINCIPLES
-              </h3>
+                {dragCount > 2 && (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-[2rem] ml-2"
+                  >
+                    ?
+                  </motion.span>
+                )}
+              </motion.h3>
 
               {/* Desktop row 2 */}
               <div className="hidden lg:grid grid-cols-2 gap-3">
-                {secondRow.map((it) => (
+                {secondRow.map((it, idx) => (
                   <SortableCard
                     key={it.id}
                     item={it}
                     disableHover={disableHover}
+                    index={idx + 2}
                   />
                 ))}
               </div>
@@ -360,11 +504,11 @@ const AboutSection: React.FC = () => {
 
             <DragOverlay dropAnimation={dropAnimation}>
               {activeItem ? (
-                <CardShell item={activeItem} border={4} center />
+                <CardShell item={activeItem} border={4} center isBeingDragged />
               ) : null}
             </DragOverlay>
           </DndContext>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
