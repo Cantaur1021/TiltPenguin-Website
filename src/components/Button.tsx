@@ -4,18 +4,29 @@ interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   onClick?: () => void;
+  bgColor?: string; // only this can be customized
 }
 
 export const Button: React.FC<ButtonProps> = ({
   children,
   variant = "primary",
   onClick,
+  bgColor,
 }) => {
+  // defaults: primary = var(--color-yellow), secondary = #fff (as before)
+  const resolvedBg =
+    bgColor ?? (variant === "secondary" ? "#ffffff" : "var(--color-yellow)");
+
   return (
     <>
       <button
         className={`button ${variant === "secondary" ? "secondary" : ""}`}
         onClick={onClick}
+        style={
+          {
+            ["--btn-bg" as any]: resolvedBg,
+          } as React.CSSProperties
+        }
       >
         {children}
       </button>
@@ -27,17 +38,18 @@ export const Button: React.FC<ButtonProps> = ({
           font-size: 1.25rem;
           letter-spacing: 0.1em;
           border: 3px solid var(--color-black);
-          background-color: var(--color-yellow);
+          background-color: var(--btn-bg, var(--color-yellow));
           color: var(--color-black);
           box-shadow: 6px 6px 0 var(--color-black);
           cursor: pointer;
-          transition: transform 0.1s, box-shadow 0.1s;
+          transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s;
           text-transform: uppercase;
         }
 
         .button:hover {
           transform: translate(-2px, -2px);
           box-shadow: 8px 8px 0 var(--color-black);
+          background-color: var(--btn-bg, var(--color-yellow)); /* keep same bg on hover */
         }
 
         .button:active {
@@ -46,10 +58,8 @@ export const Button: React.FC<ButtonProps> = ({
         }
 
         .button.secondary {
-          background-color: white;
+          /* no extra styles needed; default bg is #fff unless bgColor is passed */
         }
-
-        // In Button.tsx, update the media queries:
 
         @media (max-width: 1220px) {
           .button {

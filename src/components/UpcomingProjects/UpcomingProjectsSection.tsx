@@ -19,6 +19,7 @@ const UpcomingProjectsSection: React.FC = () => {
   const total = projects.length;
   const [index, setIndex] = useState(0);
   const [dir, setDir] = useState<1 | -1>(1);
+  const [autoRotate, setAutoRotate] = useState(true);
 
   // Tighter side spacing (closer cards)
   const [offset, setOffset] = useState(320);
@@ -29,13 +30,29 @@ const UpcomingProjectsSection: React.FC = () => {
     return () => window.removeEventListener("resize", calc);
   }, []);
 
+  // Auto-rotate carousel
+  useEffect(() => {
+    if (!autoRotate) return;
+    const timer = setInterval(() => {
+      setDir(1);
+      setIndex((i) => mod(i + 1, total));
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [autoRotate, total]);
+
   const goNext = useCallback(() => {
+    setAutoRotate(false);
     setDir(1);
     setIndex((i) => mod(i + 1, total));
+    // Resume auto-rotate after manual interaction
+    setTimeout(() => setAutoRotate(true), 10000);
   }, [total]);
+
   const goPrev = useCallback(() => {
+    setAutoRotate(false);
     setDir(-1);
     setIndex((i) => mod(i - 1, total));
+    setTimeout(() => setAutoRotate(true), 10000);
   }, [total]);
 
   useEffect(() => {
@@ -75,6 +92,7 @@ const UpcomingProjectsSection: React.FC = () => {
           scale: 1,
           zIndex: 3,
           opacity: 1,
+          rotate: 0,
           pointerEvents: "auto" as const,
         };
       case "left":
@@ -84,6 +102,7 @@ const UpcomingProjectsSection: React.FC = () => {
           scale: 0.88,
           zIndex: 2,
           opacity: 1,
+          rotate: -5,
           pointerEvents: "none" as const,
         };
       case "right":
@@ -93,6 +112,7 @@ const UpcomingProjectsSection: React.FC = () => {
           scale: 0.88,
           zIndex: 2,
           opacity: 1,
+          rotate: 5,
           pointerEvents: "none" as const,
         };
       default:
@@ -102,6 +122,7 @@ const UpcomingProjectsSection: React.FC = () => {
           scale: 0.85,
           zIndex: 1,
           opacity: 0,
+          rotate: dir === 1 ? 10 : -10,
           pointerEvents: "none" as const,
         };
     }
@@ -116,61 +137,94 @@ const UpcomingProjectsSection: React.FC = () => {
 
   return (
     <section
-      className="relative w-full overflow-hidden border-y-[5px] border-black"
+      className="relative w-full overflow-hidden border-y-[5px] border-black z-10"
       style={{ backgroundColor: "#5C93E7" }}
-      aria-live="polite"
+      aria-live="polite" 
     >
-      {/* stronger, tighter grid */}
-      <div
+      {/* stronger, tighter grid with animation */}
+      <motion.div
         className="pointer-events-none absolute inset-0 opacity-40"
         style={{
           backgroundImage:
             "linear-gradient(0deg, rgba(0,0,0,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.12) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 0.4 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1 }}
       />
 
       {/* ===== DESKTOP/TABLET EDGE ARROWS (pinned to screen edges) ===== */}
-      <button
+      <motion.button
         aria-label="Previous project"
         onClick={goPrev}
         className="hidden sm:flex group absolute left-2 md:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30
                    w-12 h-20 md:w-14 md:h-24 rounded-full bg-[#C2EEE1] border-[5px] border-black shadow-[8px_8px_0_#000]
-                   items-center justify-center"
+                   items-center justify-center transition-all duration-200
+                   hover:shadow-[10px_10px_0_#000] hover:scale-105"
+        initial={{ opacity: 0, x: -50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        whileHover={{ x: -2 }}
+        whileTap={{ scale: 0.95 }}
       >
         <span className="text-black text-2xl md:text-3xl group-active:translate-x-[-2px]">
           ←
         </span>
-      </button>
-      <button
+      </motion.button>
+      <motion.button
         aria-label="Next project"
         onClick={goNext}
         className="hidden sm:flex group absolute right-2 md:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30
                    w-12 h-20 md:w-14 md:h-24 rounded-full bg-[#C2EEE1] border-[5px] border-black shadow-[8px_8px_0_#000]
-                   items-center justify-center"
+                   items-center justify-center transition-all duration-200
+                   hover:shadow-[10px_10px_0_#000] hover:scale-105"
+        initial={{ opacity: 0, x: 50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        whileHover={{ x: 2 }}
+        whileTap={{ scale: 0.95 }}
       >
         <span className="text-black text-2xl md:text-3xl group-active:translate-x-[2px]">
           →
         </span>
-      </button>
+      </motion.button>
       {/* ============================================================ */}
 
-      {/* title (tighter + smaller) */}
+      {/* title with animation */}
       <div className="relative z-10">
-        <h2
+        <motion.h2
           className="mt-3 mb-1 md:mb-2 text-center leading-[0.82] tracking-[0.04em]
                      [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
                      text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem]"
           style={{ color: "#C2EEE1", fontFamily: "'Bebas Neue', sans-serif" }}
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          whileHover={{ 
+            scale: 1.02,
+            rotate: [-0.5, 0.5, 0],
+            transition: { duration: 0.3 }
+          }}
         >
           UPCOMING PROJECTS
-        </h2>
+        </motion.h2>
       </div>
 
       {/* stage wrapper (shorter, denser) */}
       <div className="relative z-10 mx-auto max-w-[1200px] px-4 md:px-6 pt-3 md:pt-5 pb-6 md:pb-10">
         {/* desktop/tablet: 3-card animated carousel (shorter & narrower) */}
-        <div className="relative mx-auto hidden sm:block w-full max-w-[820px] h-[560px]">
+        <motion.div 
+          className="relative mx-auto hidden sm:block w-full max-w-[820px] h-[560px]"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
           {projects.map((p) => {
             const slot = slots[p.id];
             const t = targetFor(slot);
@@ -185,11 +239,15 @@ const UpcomingProjectsSection: React.FC = () => {
                   pointerEvents: (t as any).pointerEvents,
                 }}
               >
-                <GameBoy project={p} />
+                <GameBoy 
+                  project={p} 
+                  isCenter={slot === "center"}
+                  onInteraction={() => setAutoRotate(false)}
+                />
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* mobile: single card (shorter) */}
         <div className="sm:hidden">
@@ -198,36 +256,50 @@ const UpcomingProjectsSection: React.FC = () => {
               <motion.div
                 key={projects[index].id}
                 custom={dir}
-                initial={{ x: dir === 1 ? 160 : -160, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: dir === 1 ? -160 : 160, opacity: 0 }}
+                initial={{ x: dir === 1 ? 160 : -160, opacity: 0, rotate: dir === 1 ? 10 : -10 }}
+                animate={{ x: 0, opacity: 1, rotate: 0 }}
+                exit={{ x: dir === 1 ? -160 : 160, opacity: 0, rotate: dir === 1 ? -10 : 10 }}
                 transition={spring}
-                className="flex justify-center" // removed mt-2
+                className="flex justify-center"
               >
-                <GameBoy project={projects[index]} />
+                <GameBoy 
+                  project={projects[index]} 
+                  isCenter={true}
+                  onInteraction={() => setAutoRotate(false)}
+                />
               </motion.div>
             </AnimatePresence>
             {/* buttons: moved further down */}
-            <div className="mt-4 flex items-center justify-center gap-5">
-              <button
+            <motion.div 
+              className="mt-4 flex items-center justify-center gap-5"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+            >
+              <motion.button
                 aria-label="Previous project"
                 onClick={goPrev}
                 className="group w-14 h-20 rounded-full bg-[#C2EEE1] border-[5px] border-black shadow-[8px_8px_0_#000] grid place-items-center"
+                whileHover={{ scale: 1.05, boxShadow: "10px 10px 0 #000" }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="text-black text-2xl group-active:translate-x-[-1px]">
                   ←
                 </span>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 aria-label="Next project"
                 onClick={goNext}
                 className="group w-14 h-20 rounded-full bg-[#C2EEE1] border-[5px] border-black shadow-[8px_8px_0_#000] grid place-items-center"
+                whileHover={{ scale: 1.05, boxShadow: "10px 10px 0 #000" }}
+                whileTap={{ scale: 0.95 }}
               >
                 <span className="text-black text-2xl group-active:translate-x-[1px]">
                   →
                 </span>
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           </div>
         </div>
       </div>
