@@ -83,7 +83,7 @@ export default function GamesThatRaisedMe() {
   const [cartridgeEject, setCartridgeEject] = useState(false);
 
   const steps = Math.max(1, GAMES.length - 1);
-  const totalHeightVh = Math.max(VH_PER_STEP * steps, VH_PER_STEP);
+  const totalHeightVh = Math.max(VH_PER_STEP * (steps + 1), VH_PER_STEP); // Added +1 to give space for last game
 
   const { scrollYProgress } = useScroll({
     target: trackRef,
@@ -92,7 +92,9 @@ export default function GamesThatRaisedMe() {
 
   const [raw, setRaw] = useState(0);
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const mapped = v * (GAMES.length - 1);
+    // Adjust the mapping to leave room for the last game
+    const adjustedProgress = v * 1.5; // Use only 150% of scroll for transitions
+    const mapped = adjustedProgress * (GAMES.length - 1);
     const clamped = Math.min(Math.max(mapped, 0), GAMES.length - 1);
     setRaw(clamped);
     
@@ -128,20 +130,20 @@ export default function GamesThatRaisedMe() {
   const SLIDE = useMemo(() => CONSOLE.slot.width * 0.9, []);
 
   return (
-    <section id="games-that-raised-me" className="relative z-10 bg-[rgb(162,122,188)] border-b-4">
+    <section id="games-that-raised-me" className="relative z-10 bg-[rgb(162,122,188)]">
       <div ref={trackRef} style={{ height: `${totalHeightVh}vh` }} className="bg-[rgb(162,122,188)] relative z-10">
         <div className="sticky top-0 h-[100svh] w-full bg-[rgb(162,122,188)]">
           <div
             className="
               mx-auto h-full max-w-[1200px]
               grid grid-rows-[auto_1fr_auto] items-center gap-6 md:gap-8
-              px-4 py-2 md:py-4
+              px-4 py-1 md:py-4
             "
           >
             {/* Header with animation */}
             <motion.h2
               className="
-                mb-1 md:mb-2
+                mt-1 mb-1 md:mb-2
                 text-center leading-[0.82] tracking-[0.04em]
                 [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
                 text-[2.4rem] md:text-[4.2rem] lg:text-[7.2rem]
@@ -204,7 +206,7 @@ export default function GamesThatRaisedMe() {
                 }}
               >
                 <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700" style={{ fontFamily: "Poppins, sans-serif" }}>
-                  TiltPenguin wouldn`&apos;t exist without these:
+                  TiltPenguin wouldn't exist without these:
                 </p>
 
                 <AnimatePresence mode="wait">
