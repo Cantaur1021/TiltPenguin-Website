@@ -206,7 +206,7 @@ export default function GamesThatRaisedMe() {
                 }}
               >
                 <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700" style={{ fontFamily: "Poppins, sans-serif" }}>
-                  TiltPenguin wouldn't exist without these:
+                  TiltPenguin wouldn`&apos;t exist without these:
                 </p>
 
                 <AnimatePresence mode="wait">
