@@ -33,7 +33,7 @@ function Card({
   hoverable?: boolean;
 }) {
   const [clicks, setClicks] = useState(0);
-  
+
   return (
     <motion.div
       className={[
@@ -79,9 +79,9 @@ function Card({
           animate={{ opacity: 1, scale: 1 }}
           className="text-xs mt-2 text-center opacity-60"
         >
-          {clicks === 1 && "You found the click zone!"}
-          {clicks === 2 && "Keep going..."}
-          {clicks === 3 && "One more..."}
+          {clicks === 1 && <>You found the click zone!</>}
+          {clicks === 2 && <>Keep going&#8230;</>}
+          {clicks === 3 && <>One more&#8230;</>}
         </motion.p>
       )}
     </motion.div>
@@ -103,7 +103,7 @@ function ImageCard({
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [glitch, setGlitch] = useState(false);
-  
+
   // Random glitch effect on hover
   const handleMouseEnter = () => {
     if (Math.random() < 0.3) {
@@ -148,7 +148,7 @@ function ImageCard({
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="text-4xl"
           >
-            🐧
+            {"\uD83D\uDC27"}
           </motion.div>
         </div>
       )}
@@ -159,15 +159,15 @@ function ImageCard({
 /**
  * Aspect wrappers to preserve your Figma proportions while letting the
  * grid expand edge-to-edge. These match your original pixel boxes:
- *  - Wide block:   607 x 355  => aspect-[607/355]
- *  - Small cards:  296 x 251  => aspect-[296/251]
- *  - Tall image:   607 x 520  => aspect-[607/520]
+ *  - Wide block:   607 x 355  =&gt; aspect-[607/355]
+ *  - Small cards:  296 x 251  =&gt; aspect-[296/251]
+ *  - Tall image:   607 x 520  =&gt; aspect-[607/520]
  */
 function Aspect({ ratio, children, className = "" }: { ratio: string; children: React.ReactNode; className?: string }) {
   // Using padding-bottom trick for aspect ratio since Tailwind's dynamic aspect-ratio might not work
   const [width, height] = ratio.split('/').map(Number);
   const paddingBottom = `${(height / width) * 100}%`;
-  
+
   return (
     <div className={`relative w-full ${className}`} style={{ paddingBottom }}>
       <div className="absolute inset-0">{children}</div>
@@ -239,7 +239,7 @@ export default function AboutMeLocked() {
             exit={{ opacity: 0, scale: 0, rotate: 180 }}
           >
             <div className="bg-[#FFC700] border-4 border-black px-4 py-2 shadow-[4px_4px_0_#000]">
-              <p className="font-bold text-black">YOU FOUND THE TILT CODE! 🐧</p>
+              <p className="font-bold text-black">YOU FOUND THE TILT CODE! {"\uD83D\uDC27"}</p>
             </div>
           </motion.div>
         )}
@@ -292,7 +292,7 @@ export default function AboutMeLocked() {
             </Aspect>
             <Aspect ratio="296/251">
               <Card title="PHILOSOPHY" center delay={0.5} hoverable>
-                If it's not fun to make, it won't be fun to play. Also, penguins make everything better.
+                If it&apos;s not fun to make, it won&apos;t be fun to play. Also, penguins make everything better.
               </Card>
             </Aspect>
           </div>
@@ -351,7 +351,7 @@ export default function AboutMeLocked() {
         className="text-center pb-2 text-xs opacity-20 hover:opacity-60 transition-opacity"
         style={{ fontFamily: "Poppins, sans-serif" }}
       >
-        psst... try typing "TILT" anywhere on the page
+        psst... try typing &quot;TILT&quot; anywhere on the page
       </motion.div>
     </motion.section>
   );

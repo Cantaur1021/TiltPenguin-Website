@@ -23,37 +23,36 @@ const GAMES: Game[] = [
     title: "Minecraft",
     cartridgeSrc: "/cartridges.svg",
     body:
-      "I've owned this game on every device that could run it (and a few that really couldn't) (shout out PSP homebrew). I've liked games before, but Minecraft is what truly kickstarted my love for creating worlds when I was 10 years old. I spent hours making pixel art of my favorite characters, building a 1:1 scale version of my old home before it was demolished, and binge-watching Stampy and Squid's adventure maps, immediately trying (and failing) to recreate something similar because I was just a 10 year with the attention span of a goldfish. Minecraft changed everything for me. I hope something I create one day can do the same for a 10-year-old somewhere as this game did for me.",
+      "I&apos;ve owned this game on every device that could run it (and a few that really couldn&apos;t) (shout out PSP homebrew). I&apos;ve liked games before, but Minecraft is what truly kickstarted my love for creating worlds when I was 10 years old. I spent hours making pixel art of my favorite characters, building a 1:1 scale version of my old home before it was demolished, and binge-watching Stampy and Squid&apos;s adventure maps, immediately trying (and failing) to recreate something similar because I was just a 10 year with the attention span of a goldfish. Minecraft changed everything for me. I hope something I create one day can do the same for a 10-year-old somewhere as this game did for me.",
   },
   {
     key: "nitw",
     title: "Night in the Woods",
     cartridgeSrc: "/cartridges.svg",
     body:
-      "What Minecraft did for me as a child, Night in the Woods did for me as a man-child. Most of my personality (notice how I didn't say all) was adopted from this game. Every element—from the art to the music to the story to the characters to Possum Springs—hit at the exact right time. It was mid-COVID, I'd lost someone close, and this game put into words what I struggled with, but with so much style and punk it made me—an indoor degen—feel cool. It yanked me off a dangerous ledge and locked me in a room buzzing with life. $20 feels like a cosmic underpayment. (Shout out Revenant Hill.)",
+      "What Minecraft did for me as a child, Night in the Woods did for me as a man-child. Most of my personality (notice how I didn&apos;t say all) was adopted from this game. Every element&mdash;from the art to the music to the story to the characters to Possum Springs&mdash;hit at the exact right time. It was mid-COVID, I&apos;d lost someone close, and this game put into words what I struggled with, but with so much style and punk it made me&mdash;an indoor degen&mdash;feel cool. It yanked me off a dangerous ledge and locked me in a room buzzing with life. $20 feels like a cosmic underpayment. (Shout out Revenant Hill.)",
   },
   {
     key: "gow",
     title: "God of War (2018) + Ragnarök",
     cartridgeSrc: "/cartridges.svg",
     body:
-      "PlayStation's 2016 E3 showcase is still king for me. Older, bearded Kratos; a gentler thunder; combat that flipped the series 180. Cory Barlog's and Eric Williams' masterpieces didn't just reinvent a franchise; they redefined taking a character, a world, and an audience into adulthood. I'm glad I grew up with Kratos's version of masculinity—flawed and striving—over alpha-podcaster posturing. I may not have muscles or a beard, but I am going bald and that's totally a deliberate Kratos tribute and not genetics.",
+      "PlayStation&apos;s 2016 E3 showcase is still king for me. Older, bearded Kratos; a gentler thunder; combat that flipped the series 180. Cory Barlog&apos;s and Eric Williams&apos; masterpieces didn&apos;t just reinvent a franchise; they redefined taking a character, a world, and an audience into adulthood. I&apos;m glad I grew up with Kratos&apos;s version of masculinity&mdash;flawed and striving&mdash;over alpha-podcaster posturing. I may not have muscles or a beard, but I am going bald and that&apos;s totally a deliberate Kratos tribute and not genetics.",
   },
   {
     key: "rdr2",
     title: "Red Dead Redemption 2",
     cartridgeSrc: "/cartridges.svg",
     body:
-      "Cowboys have never been more depressing. I once showed my English teacher the trailer—unsure what I wanted, maybe validation that games are legit storytelling. She loved it. The world feels lived-in, dripping with history and melancholy; truly 3D characters; an epic that spans a continent. The gameplay didn't need to be revolutionary; the story's immersion could only be done in a game. Rockstar deserves the flowers (and yeah, please treat your employees better).",
+      "Cowboys have never been more depressing. I once showed my English teacher the trailer&mdash;unsure what I wanted, maybe validation that games are legit storytelling. She loved it. The world feels lived-in, dripping with history and melancholy; truly 3D characters; an epic that spans a continent. The gameplay didn&apos;t need to be revolutionary; the story&apos;s immersion could only be done in a game. Rockstar deserves the flowers (and yeah, please treat your employees better).",
   },
   {
     key: "titanfall2",
     title: "Titanfall 2",
     cartridgeSrc: "/cartridges.svg",
     body:
-      "\"There's a point at 7,000 RPM… Who are you?\" – Ben Affleck, *Cars*. (Yes, I know.) It's pure momentum, inventive missions, and a campaign that never wastes your time. Underrated legend.",
+      "&ldquo;There&apos;s a point at 7,000 RPM&hellip; Who are you?&rdquo; &ndash; Ben Affleck, <em>Cars</em>. (Yes, I know.) It&apos;s pure momentum, inventive missions, and a campaign that never wastes your time. Underrated legend.",
   },
-
 ];
 
 const CONSOLE = {
@@ -191,14 +190,14 @@ export default function GamesThatRaisedMe() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                whileHover={{ shadow: "14px_14px_0_#000" }}
+                whileHover={{ boxShadow: "14px 14px 0 #000" }}
                 style={{
                   transform: cartridgeEject ? 'scale(1.02)' : 'scale(1)',
                   transition: 'transform 0.3s ease-out'
                 }}
               >
                 <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700" style={{ fontFamily: "Poppins, sans-serif" }}>
-                  TiltPenguin wouldn't exist without these:
+                  TiltPenguin would not exist without these:
                 </p>
 
                 <AnimatePresence mode="wait">
