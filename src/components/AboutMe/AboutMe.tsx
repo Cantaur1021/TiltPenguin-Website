@@ -37,10 +37,12 @@ function Card({
   return (
     <motion.div
       className={[
-        "h-full w-full border-[5px] border-[var(--color-black)] bg-[var(--paper)]",
-        "shadow-[8px_8px_0_var(--color-black)] p-4 md:p-5 lg:p-6",
+        "h-full w-full border-[3px] sm:border-[4px] lg:border-[5px] border-[var(--color-black)] bg-[var(--paper)]",
+        "shadow-[4px_4px_0_var(--color-black)] sm:shadow-[6px_6px_0_var(--color-black)] lg:shadow-[8px_8px_0_var(--color-black)] p-3 sm:p-4 md:p-5 lg:p-6",
         "transition-shadow duration-200",
-        hoverable ? "cursor-pointer hover:shadow-[10px_10px_0_var(--color-black)]" : "",
+        hoverable
+          ? "cursor-pointer hover:shadow-[6px_6px_0_var(--color-black)] sm:hover:shadow-[8px_8px_0_var(--color-black)] lg:hover:shadow-[10px_10px_0_var(--color-black)]"
+          : "",
         className,
       ].join(" ")}
       initial={{ opacity: 0, y: 20 }}
@@ -48,12 +50,12 @@ function Card({
       viewport={{ once: true, amount: 0.3 }}
       transition={{ delay, duration: 0.5, ease: "easeOut" }}
       whileHover={hoverable ? { scale: 1.02 } : {}}
-      onClick={hoverable ? () => setClicks(c => c + 1) : undefined}
+      onClick={hoverable ? () => setClicks((c) => c + 1) : undefined}
     >
       {title && (
         <h4
           className={[
-            "mb-2 text-4xl uppercase leading-none tracking-wide",
+            "mb-1 sm:mb-2 text-2xl sm:text-3xl lg:text-4xl uppercase leading-none tracking-wide",
             center ? "text-center" : "",
           ].join(" ")}
           style={{ fontFamily: "'Bebas Neue', sans-serif" }}
@@ -63,15 +65,15 @@ function Card({
         </h4>
       )}
       {children && (
-        <p
+        <div
           className={[
             center ? "text-center" : "",
-            "m-0 text-base leading-snug font-bold",
+            "m-0 text-sm sm:text-base leading-snug font-bold",
           ].join(" ")}
           style={{ fontFamily: "Poppins, sans-serif" }}
         >
           {children}
-        </p>
+        </div>
       )}
       {clicks > 0 && clicks <= 3 && hoverable && (
         <motion.p
@@ -88,15 +90,15 @@ function Card({
   );
 }
 
-function ImageCard({ 
-  src, 
-  alt, 
-  label, 
+function ImageCard({
+  src,
+  alt,
+  label,
   delay = 0,
-  parallax = false 
-}: { 
-  src: string; 
-  alt: string; 
+  parallax = false,
+}: {
+  src: string;
+  alt: string;
   label: string;
   delay?: number;
   parallax?: boolean;
@@ -113,9 +115,9 @@ function ImageCard({
   };
 
   return (
-    <motion.div 
-      className="relative h-full w-full border-[5px] border-[var(--color-black)] shadow-[8px_8px_0_var(--color-black)] overflow-hidden bg-[var(--paper)]
-                 transition-shadow duration-200 hover:shadow-[10px_10px_0_var(--color-black)]"
+    <motion.div
+      className="relative h-full w-full border-[3px] sm:border-[4px] lg:border-[5px] border-[var(--color-black)] shadow-[4px_4px_0_var(--color-black)] sm:shadow-[6px_6px_0_var(--color-black)] lg:shadow-[8px_8px_0_var(--color-black)] overflow-hidden bg-[var(--paper)]
+                 transition-shadow duration-200 hover:shadow-[6px_6px_0_var(--color-black)] sm:hover:shadow-[8px_8px_0_var(--color-black)] lg:hover:shadow-[10px_10px_0_var(--color-black)]"
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.3 }}
@@ -125,18 +127,27 @@ function ImageCard({
     >
       <Label>{label}</Label>
       <motion.div
-        animate={glitch ? {
-          x: [0, -2, 2, 0],
-          filter: ["hue-rotate(0deg)", "hue-rotate(90deg)", "hue-rotate(-90deg)", "hue-rotate(0deg)"]
-        } : {}}
+        animate={
+          glitch
+            ? {
+                x: [0, -2, 2, 0],
+                filter: [
+                  "hue-rotate(0deg)",
+                  "hue-rotate(90deg)",
+                  "hue-rotate(-90deg)",
+                  "hue-rotate(0deg)",
+                ],
+              }
+            : {}
+        }
         transition={{ duration: 0.2 }}
         className="relative w-full h-full"
       >
-        <Image 
-          src={src} 
-          alt={alt} 
-          fill 
-          className={`object-cover transition-all duration-500 ${imageLoaded ? 'blur-0' : 'blur-md'}`}
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className={`object-cover transition-all duration-500 ${imageLoaded ? "blur-0" : "blur-md"}`}
           onLoad={() => setImageLoaded(true)}
           priority={delay === 0}
         />
@@ -163,9 +174,17 @@ function ImageCard({
  *  - Small cards:  296 x 251  =&gt; aspect-[296/251]
  *  - Tall image:   607 x 520  =&gt; aspect-[607/520]
  */
-function Aspect({ ratio, children, className = "" }: { ratio: string; children: React.ReactNode; className?: string }) {
+function Aspect({
+  ratio,
+  children,
+  className = "",
+}: {
+  ratio: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   // Using padding-bottom trick for aspect ratio since Tailwind's dynamic aspect-ratio might not work
-  const [width, height] = ratio.split('/').map(Number);
+  const [width, height] = ratio.split("/").map(Number);
   const paddingBottom = `${(height / width) * 100}%`;
 
   return (
@@ -202,28 +221,32 @@ export default function AboutMeLocked() {
         px-0 z-10
       "
       style={{ background: BG, ["--paper" as any]: PAPER }}
-      animate={showEasterEgg ? {
-        rotate: [0, -2, 2, -1, 1, 0],
-        transition: { duration: 0.5, repeat: 2 }
-      } : {}}
+      animate={
+        showEasterEgg
+          ? {
+              rotate: [0, -2, 2, -1, 1, 0],
+              transition: { duration: 0.5, repeat: 2 },
+            }
+          : {}
+      }
     >
       {/* Title */}
       <motion.h2
         className="
           mt-3 mb-1 md:mb-2
-          text-center leading-[0.82] tracking-[0.04em]
-          [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
-          text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem]
+          text-center leading-[0.82] tracking-[0.02em] sm:tracking-[0.04em]
+          [text-shadow:2px_2px_0_var(--color-black),3px_3px_0_var(--color-black)] sm:[text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
+          text-[2rem] sm:text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem] px-2
         "
         style={{ color: "#FFE3E3", fontFamily: "'Bebas Neue', sans-serif" }}
         initial={{ opacity: 0, y: -30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        whileHover={{ 
+        whileHover={{
           scale: 1.02,
           rotate: [-0.5, 0.5, 0],
-          transition: { duration: 0.3 }
+          transition: { duration: 0.3 },
         }}
       >
         ABOUT ME
@@ -239,38 +262,39 @@ export default function AboutMeLocked() {
             exit={{ opacity: 0, scale: 0, rotate: 180 }}
           >
             <div className="bg-[#FFC700] border-4 border-black px-4 py-2 shadow-[4px_4px_0_#000]">
-              <p className="font-bold text-black">YOU FOUND THE TILT CODE! {"\uD83D\uDC27"}</p>
+              <p className="font-bold text-black">
+                YOU FOUND THE TILT CODE! {"\uD83D\uDC27"}
+              </p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Edge-to-edge grid with tight gaps (matches AboutSection) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 pb-6 px-3 md:px-4">
-
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 lg:gap-4 pb-4 sm:pb-6 px-2 sm:px-3 md:px-4">
         {/* LEFT COLUMN (stack) */}
-        <div className="flex flex-col gap-3 lg:gap-4">
+        <div className="flex flex-col gap-2 sm:gap-3 lg:gap-4">
           {/* Top-left (wide text) — 607x355 */}
           <Aspect ratio="607/355">
             <Card className="flex items-center justify-center" delay={0.1}>
               <motion.p
-                className="m-0 text-center text-[1.8rem] md:text-[2.1rem] lg:text-[2.4rem] leading-[1.05] uppercase"
+                className="m-0 text-center text-[1.2rem] sm:text-[1.5rem] md:text-[1.8rem] lg:text-[2.1rem] xl:text-[2.4rem] leading-[1.1] sm:leading-[1.05] uppercase"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 whileInView={{
                   transition: {
-                    staggerChildren: 0.05
-                  }
+                    staggerChildren: 0.05,
+                  },
                 }}
               >
-                Hi, I&apos;m Chinmay. I&apos;ve built games for brand events and companies,
-                but TiltPenguin is where I get loose, get messy, and make the kind
-                of odd little experiments I actually want to play.
+                Hi, I&apos;m Chinmay. I&apos;ve built games for brand events and
+                companies, but TiltPenguin is where I get loose, get messy, and
+                make the kind of odd little experiments I actually want to play.
               </motion.p>
             </Card>
           </Aspect>
 
           {/* Row of two small cards — 296x251 each */}
-          <div className="grid grid-cols-2 gap-3 lg:gap-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
             <Aspect ratio="296/251">
               <Card title="SUPERPOWER" center delay={0.2} hoverable>
                 Turning barely baked ideas into barely playable demos.
@@ -278,30 +302,33 @@ export default function AboutMeLocked() {
             </Aspect>
             <Aspect ratio="296/251">
               <Card title="GOAL" center delay={0.3} hoverable>
-                Games that surprise, delight and maybe confuse you (and me as well).
+                Games that surprise, delight and maybe confuse you (and me as
+                well).
               </Card>
             </Aspect>
           </div>
 
           {/* Row of two small cards — 296x251 each */}
-          <div className="grid grid-cols-2 gap-3 lg:gap-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
             <Aspect ratio="296/251">
               <Card title="WEAKNESS" center delay={0.4} hoverable>
-                Fixing bugs I accidentally start to like (they grow on me). And cookies.
+                Fixing bugs I accidentally start to like (they grow on me). And
+                cookies.
               </Card>
             </Aspect>
             <Aspect ratio="296/251">
               <Card title="PHILOSOPHY" center delay={0.5} hoverable>
-                If it&apos;s not fun to make, it won&apos;t be fun to play. Also, penguins make everything better.
+                If it&apos;s not fun to make, it won&apos;t be fun to play.
+                Also, penguins make everything better.
               </Card>
             </Aspect>
           </div>
 
           {/* Bottom-left image — 607x355 */}
           <Aspect ratio="607/355">
-            <ImageCard 
-              src="/images/about/bottom-left.webp" 
-              alt="Lab chaos" 
+            <ImageCard
+              src="/images/about/bottom-left.webp"
+              alt="Lab chaos"
               label="BARELY GROWN-UP ENGINEERING"
               delay={0.6}
             />
@@ -309,12 +336,12 @@ export default function AboutMeLocked() {
         </div>
 
         {/* RIGHT COLUMN (stack) */}
-        <div className="flex flex-col gap-3 lg:gap-4">
+        <div className="flex flex-col gap-2 sm:gap-3 lg:gap-4">
           {/* Top-right image — 607x355 */}
           <Aspect ratio="607/355">
-            <ImageCard 
-              src="/images/about/top-right.webp" 
-              alt="Retro gaming setup" 
+            <ImageCard
+              src="/images/about/top-right.webp"
+              alt="Retro gaming setup"
               label="2007 KERALA // OUTDOOR GAMING SETUP"
               delay={0.2}
               parallax
@@ -325,20 +352,22 @@ export default function AboutMeLocked() {
           <Aspect ratio="607/355">
             <Card className="flex items-center justify-center" delay={0.4}>
               <p
-                className="m-0 text-center text-[1.8rem] md:text-[2.1rem] lg:text-[2.4rem] leading-[1.05] uppercase"
+                className="m-0 text-center text-[1.2rem] sm:text-[1.5rem] md:text-[1.8rem] lg:text-[2.1rem] xl:text-[2.4rem] leading-[1.1] sm:leading-[1.05] uppercase"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               >
-                When I&apos;m not wrangling code, I&apos;m usually breaking it on purpose just to see what happens.
-                This site is literally just a museum of prototypes, mistakes and happy accidents (shout out Bob Ross).
+                When I&apos;m not wrangling code, I&apos;m usually breaking it
+                on purpose just to see what happens. This site is literally just
+                a museum of prototypes, mistakes and happy accidents (shout out
+                Bob Ross).
               </p>
             </Card>
           </Aspect>
 
           {/* Bottom-right tall image — 607x520 */}
           <Aspect ratio="607/520">
-            <ImageCard 
-              src="/images/about/bottom-right.webp" 
-              alt="Kerala street" 
+            <ImageCard
+              src="/images/about/bottom-right.webp"
+              alt="Kerala street"
               label="KERALA MY SPAWN POINT"
               delay={0.6}
             />
@@ -347,7 +376,7 @@ export default function AboutMeLocked() {
       </div>
 
       {/* Hidden hint */}
-      <motion.div 
+      <motion.div
         className="text-center pb-2 text-xs opacity-20 hover:opacity-60 transition-opacity"
         style={{ fontFamily: "Poppins, sans-serif" }}
       >

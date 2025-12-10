@@ -34,22 +34,36 @@ export default function GameBoy({
   const [konamiProgress, setKonamiProgress] = useState<string[]>([]);
 
   const handleButtonPress = (button: keyof typeof buttonPresses) => {
-    setButtonPresses(prev => ({ ...prev, [button]: prev[button] + 1 }));
+    setButtonPresses((prev) => ({ ...prev, [button]: prev[button] + 1 }));
     onInteraction?.();
-    
+
     // Konami code detection
-    const konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a'];
+    const konamiCode = [
+      "up",
+      "up",
+      "down",
+      "down",
+      "left",
+      "right",
+      "left",
+      "right",
+      "b",
+      "a",
+    ];
     const newProgress = [...konamiProgress, button].slice(-10);
     setKonamiProgress(newProgress);
-    
-    if (newProgress.join(',') === konamiCode.join(',')) {
+
+    if (newProgress.join(",") === konamiCode.join(",")) {
       setScreenGlitch(true);
       setTimeout(() => setScreenGlitch(false), 1000);
       setKonamiProgress([]);
     }
-    
+
     // Random glitch on too many presses
-    const totalPresses = Object.values(buttonPresses).reduce((a, b) => a + b, 0);
+    const totalPresses = Object.values(buttonPresses).reduce(
+      (a, b) => a + b,
+      0
+    );
     if (totalPresses > 20 && Math.random() < 0.1) {
       setScreenGlitch(true);
       setTimeout(() => setScreenGlitch(false), 300);
@@ -67,14 +81,18 @@ export default function GameBoy({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.5 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      animate={isCenter ? {
-        y: [0, -5, 0],
-        transition: {
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }
-      } : {}}
+      animate={
+        isCenter
+          ? {
+              y: [0, -5, 0],
+              transition: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }
+          : {}
+      }
     >
       <article
         className={[
@@ -86,12 +104,21 @@ export default function GameBoy({
         ].join(" ")}
       >
         {/* Screen — black border + strong drop shadow */}
-        <motion.div 
+        <motion.div
           className="relative w-full h-[270px] bg-[#63DB7E] rounded-none rounded-br-[26px] border-[6px] border-black shadow-[10px_10px_0_#000] overflow-hidden"
-          animate={screenGlitch ? {
-            x: [0, -2, 2, -2, 0],
-            filter: ["hue-rotate(0deg)", "hue-rotate(90deg)", "hue-rotate(-90deg)", "hue-rotate(0deg)"],
-          } : {}}
+          animate={
+            screenGlitch
+              ? {
+                  x: [0, -2, 2, -2, 0],
+                  filter: [
+                    "hue-rotate(0deg)",
+                    "hue-rotate(90deg)",
+                    "hue-rotate(-90deg)",
+                    "hue-rotate(0deg)",
+                  ],
+                }
+              : {}
+          }
           transition={{ duration: 0.3 }}
         >
           <div
@@ -112,7 +139,7 @@ export default function GameBoy({
               priority
             />
           )}
-          
+
           {screenGlitch && (
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div
@@ -136,36 +163,36 @@ export default function GameBoy({
                 className="absolute top-0 w-full h-[46px] bg-[#9B9B9B] border-[6px] border-black rounded-t-[8px] shadow-[6px_6px_0_#000]
                            transition-[transform,box-shadow] duration-100
                            hover:bg-[#B5B5B5] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0_#000]
-                           active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000]"
-                onClick={() => handleButtonPress('up')}
+                           active:translate-x-[6px] active:translate-y-[6px] active:shadow-none"
+                onClick={() => handleButtonPress("up")}
               />
               <button
                 className="absolute bottom-0 w-full h-[46px] bg-[#9B9B9B] border-[6px] border-black rounded-b-[8px] shadow-[6px_6px_0_#000]
                            transition-[transform,box-shadow] duration-100
                            hover:bg-[#B5B5B5] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0_#000]
-                           active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000]"
-                onClick={() => handleButtonPress('down')}
+                           active:translate-x-[6px] active:translate-y-[6px] active:shadow-none"
+                onClick={() => handleButtonPress("down")}
               />
             </div>
-            
+
             {/* Left/Right */}
             <div className="absolute top-1/2 left-0 -translate-y-1/2 h-[36px] w-full">
               <button
                 className="absolute left-0 h-full w-[46px] bg-[#9B9B9B] border-[6px] border-black rounded-l-[8px] shadow-[6px_6px_0_#000]
                            transition-[transform,box-shadow] duration-100
                            hover:bg-[#B5B5B5] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0_#000]
-                           active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000]"
-                onClick={() => handleButtonPress('left')}
+                           active:translate-x-[6px] active:translate-y-[6px] active:shadow-none"
+                onClick={() => handleButtonPress("left")}
               />
               <button
                 className="absolute right-0 h-full w-[46px] bg-[#9B9B9B] border-[6px] border-black rounded-r-[8px] shadow-[6px_6px_0_#000]
                            transition-[transform,box-shadow] duration-100
                            hover:bg-[#B5B5B5] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0_#000]
-                           active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000]"
-                onClick={() => handleButtonPress('right')}
+                           active:translate-x-[6px] active:translate-y-[6px] active:shadow-none"
+                onClick={() => handleButtonPress("right")}
               />
             </div>
-            
+
             {/* Center */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[46px] h-[46px] bg-[#9B9B9B] border-[6px] border-black rounded-[8px] shadow-[6px_6px_0_#000] pointer-events-none" />
           </div>
@@ -178,23 +205,27 @@ export default function GameBoy({
                          hover:bg-[#F08080] active:bg-[#F08080]
                          flex items-center justify-center font-bold text-xl"
               style={{
-                boxShadow: '6px 6px 0 #000',
-                transform: 'translate(0, 0)',
-                transition: 'transform 0.1s'
+                boxShadow: "6px 6px 0 #000",
+                transform: "translate(0, 0)",
+                transition: "transform 0.1s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                e.currentTarget.style.transform = "translate(-2px, -2px)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translate(0, 0)';
+                e.currentTarget.style.transform = "translate(0, 0)";
+                e.currentTarget.style.boxShadow = "6px 6px 0 #000";
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'translate(6px, 6px) scale(0.92)';
+                e.currentTarget.style.transform =
+                  "translate(6px, 6px) scale(0.92)";
+                e.currentTarget.style.boxShadow = "none";
               }}
               onMouseUp={(e) => {
-                e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                e.currentTarget.style.transform = "translate(-2px, -2px)";
+                e.currentTarget.style.boxShadow = "6px 6px 0 #000";
               }}
-              onClick={() => handleButtonPress('a')}
+              onClick={() => handleButtonPress("a")}
             >
               A
             </button>
@@ -204,23 +235,27 @@ export default function GameBoy({
                          hover:bg-[#F08080] active:bg-[#F08080]
                          flex items-center justify-center font-bold text-xl"
               style={{
-                boxShadow: '6px 6px 0 #000',
-                transform: 'translate(0, 0)',
-                transition: 'transform 0.1s'
+                boxShadow: "6px 6px 0 #000",
+                transform: "translate(0, 0)",
+                transition: "transform 0.1s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                e.currentTarget.style.transform = "translate(-2px, -2px)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translate(0, 0)';
+                e.currentTarget.style.transform = "translate(0, 0)";
+                e.currentTarget.style.boxShadow = "6px 6px 0 #000";
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.transform = 'translate(6px, 6px) scale(0.92)';
+                e.currentTarget.style.transform =
+                  "translate(6px, 6px) scale(0.92)";
+                e.currentTarget.style.boxShadow = "none";
               }}
               onMouseUp={(e) => {
-                e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                e.currentTarget.style.transform = "translate(-2px, -2px)";
+                e.currentTarget.style.boxShadow = "6px 6px 0 #000";
               }}
-              onClick={() => handleButtonPress('b')}
+              onClick={() => handleButtonPress("b")}
             >
               B
             </button>
@@ -249,23 +284,27 @@ export default function GameBoy({
               tracking-[0.1em] text-[12px]
               transition-[background-color] duration-100
             "
-            style={{ 
+            style={{
               fontFamily: "'Bebas Neue', sans-serif",
-              boxShadow: '6px 6px 0 #000',
-              transform: 'translate(0, 0)',
-              transition: 'transform 0.1s'
+              boxShadow: "6px 6px 0 #000",
+              transform: "translate(0, 0)",
+              transition: "transform 0.1s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translate(-2px, -2px)';
+              e.currentTarget.style.transform = "translate(-2px, -2px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translate(0, 0)';
+              e.currentTarget.style.transform = "translate(0, 0)";
+              e.currentTarget.style.boxShadow = "6px 6px 0 #000";
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.transform = 'translate(6px, 6px) scale(0.95)';
+              e.currentTarget.style.transform =
+                "translate(6px, 6px) scale(0.95)";
+              e.currentTarget.style.boxShadow = "none";
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.transform = 'translate(-2px, -2px)';
+              e.currentTarget.style.transform = "translate(-2px, -2px)";
+              e.currentTarget.style.boxShadow = "6px 6px 0 #000";
             }}
             onClick={() => {
               onInteraction?.();

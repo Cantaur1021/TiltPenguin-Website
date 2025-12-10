@@ -39,3 +39,8 @@
     transform: translateX(0);
   }
 }
+
+html,
+body {
+  background-color: #c2eee1;
+}
