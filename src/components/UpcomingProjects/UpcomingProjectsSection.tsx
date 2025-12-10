@@ -211,7 +211,7 @@ const UpcomingProjectsSection: React.FC = () => {
             transition: { duration: 0.3 },
           }}
         >
-          UPCOMING PROJECTS
+          THINGS I AM WORKING ON
         </motion.h2>
       </div>
 
