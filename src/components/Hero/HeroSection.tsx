@@ -206,7 +206,8 @@ const HeroSection: React.FC = () => {
           whileTap={{ y: 0 }}
         >
           <Button>COMING SOON</Button>
-          {/* <Button variant="secondary">VIEW SOURCE</Button> */}
+
+          <Button variant="secondary">Follow Along</Button>
         </motion.div>
       </motion.div>
 

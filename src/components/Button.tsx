@@ -1,10 +1,12 @@
 import React from "react";
+import Link from "next/link";
 
 interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   onClick?: () => void;
   bgColor?: string; // only this can be customized
+  href?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -12,27 +14,33 @@ export const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   onClick,
   bgColor,
+  href,
 }) => {
   // defaults: primary = var(--color-yellow), secondary = #fff (as before)
   const resolvedBg =
     bgColor ?? (variant === "secondary" ? "#ffffff" : "var(--color-yellow)");
 
+  const style = {
+    ["--btn-bg" as any]: resolvedBg,
+  } as React.CSSProperties;
+
+  const className = `button ${variant === "secondary" ? "secondary" : ""}`;
+
   return (
     <>
-      <button
-        className={`button ${variant === "secondary" ? "secondary" : ""}`}
-        onClick={onClick}
-        style={
-          {
-            ["--btn-bg" as any]: resolvedBg,
-          } as React.CSSProperties
-        }
-      >
-        {children}
-      </button>
+      {href ? (
+        <Link href={href} className={className} style={style}>
+          {children}
+        </Link>
+      ) : (
+        <button className={className} onClick={onClick} style={style}>
+          {children}
+        </button>
+      )}
 
       <style jsx>{`
         .button {
+          display: inline-block;
           padding: 0.875rem 2rem;
           font-family: "Bebas Neue", sans-serif;
           font-size: 1.1rem;
@@ -47,6 +55,8 @@ export const Button: React.FC<ButtonProps> = ({
             box-shadow 0.1s,
             background-color 0.1s;
           text-transform: uppercase;
+          text-decoration: none;
+          text-align: center;
         }
 
         .button:hover {
@@ -60,7 +70,7 @@ export const Button: React.FC<ButtonProps> = ({
 
         .button:active {
           transform: translate(4px, 4px);
-          box-shadow: 2px 2px 0 var(--color-black);
+          box-shadow: 0 0 0 var(--color-black);
         }
 
         .button.secondary {
@@ -77,6 +87,11 @@ export const Button: React.FC<ButtonProps> = ({
 
           .button:hover {
             box-shadow: 8px 8px 0 var(--color-black);
+          }
+
+          .button:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0 0 0 var(--color-black);
           }
         }
 
