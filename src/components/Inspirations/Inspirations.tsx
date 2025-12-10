@@ -22,43 +22,37 @@ const GAMES: Game[] = [
     key: "minecraft",
     title: "Minecraft",
     cartridgeSrc: "/cartridges.svg",
-    body:
-      "I've owned this game on every device that could run it (and a few that really couldn't) (shout out PSP homebrew). I've liked games before, but Minecraft is what truly kickstarted my love for creating worlds when I was 10 years old. I spent hours making pixel art of my favorite characters, building a 1:1 scale version of my old home before it was demolished, and binge-watching Stampy and Squid's adventure maps, immediately trying (and failing) to recreate something similar because I was just a 10 year with the attention span of a goldfish. Minecraft changed everything for me. I hope something I create one day can do the same for a 10-year-old somewhere as this game did for me.",
+    body: "I've owned this game on every device that could run it (and a few that really couldn't) (shout out PSP homebrew). I've liked games before, but Minecraft is what truly kickstarted my love for creating worlds when I was 10 years old. I spent hours making pixel art of my favorite characters, building a 1:1 scale version of my old home before it was demolished, and binge-watching Stampy and Squid's adventure maps, immediately trying (and failing) to recreate something similar because I was just a 10 year with the attention span of a goldfish. Minecraft changed everything for me. I hope something I create one day can do the same for a 10-year-old somewhere as this game did for me.",
   },
   {
     key: "nitw",
     title: "Night in the Woods",
     cartridgeSrc: "/cartridges.svg",
-    body:
-      "What Minecraft did for me as a child, Night in the Woods did for me as a man-child. Most of my personality (notice how I didn't say all) was adopted from this game. Every element—from the art to the music to the story to the characters to Possum Springs—hit at the exact right time. It was mid-COVID, I'd lost someone close, and this game put into words what I struggled with, but with so much style and punk it made me—an indoor degen—feel cool. It yanked me off a dangerous ledge and locked me in a room buzzing with life. $20 feels like a cosmic underpayment. (Shout out Revenant Hill.)",
+    body: "What Minecraft did for me as a child, Night in the Woods did for me as a man-child. Most of my personality (notice how I didn't say all) was adopted from this game. Every element—from the art to the music to the story to the characters to Possum Springs—hit at the exact right time. It was mid-COVID, I'd lost someone close, and this game put into words what I struggled with, but with so much style and punk it made me—an indoor degen—feel cool. It yanked me off a dangerous ledge and locked me in a room buzzing with life. $20 feels like a cosmic underpayment. (Shout out Revenant Hill.)",
   },
   {
     key: "gow",
     title: "God of War (2018) + Ragnarök",
     cartridgeSrc: "/cartridges.svg",
-    body:
-      "PlayStation's 2016 E3 showcase is still king for me. Older, bearded Kratos; a gentler thunder; combat that flipped the series 180. Cory Barlog's and Eric Williams' masterpieces didn't just reinvent a franchise; they redefined taking a character, a world, and an audience into adulthood. I'm glad I grew up with Kratos's version of masculinity—flawed and striving—over alpha-podcaster posturing. I may not have muscles or a beard, but I am going bald and that's totally a deliberate Kratos tribute and not genetics.",
+    body: "PlayStation's 2016 E3 showcase is still king for me. Older, bearded Kratos; a gentler thunder; combat that flipped the series 180. Cory Barlog's and Eric Williams' masterpieces didn't just reinvent a franchise; they redefined taking a character, a world, and an audience into adulthood. I'm glad I grew up with Kratos's version of masculinity—flawed and striving—over alpha-podcaster posturing. I may not have muscles or a beard, but I am going bald and that's totally a deliberate Kratos tribute and not genetics.",
   },
   {
     key: "rdr2",
     title: "Red Dead Redemption 2",
     cartridgeSrc: "/cartridges.svg",
-    body:
-      "Cowboys have never been more depressing. I once showed my English teacher the trailer—unsure what I wanted, maybe validation that games are legit storytelling. She loved it. The world feels lived-in, dripping with history and melancholy; truly 3D characters; an epic that spans a continent. The gameplay didn't need to be revolutionary; the story's immersion could only be done in a game. Rockstar deserves the flowers (and yeah, please treat your employees better).",
+    body: "Cowboys have never been more depressing. I once showed my English teacher the trailer—unsure what I wanted, maybe validation that games are legit storytelling. She loved it. The world feels lived-in, dripping with history and melancholy; truly 3D characters; an epic that spans a continent. The gameplay didn't need to be revolutionary; the story's immersion could only be done in a game. Rockstar deserves the flowers (and yeah, please treat your employees better).",
   },
   {
     key: "titanfall2",
     title: "Titanfall 2",
     cartridgeSrc: "/cartridges.svg",
-    body:
-      "\"There's a point at 7,000 RPM… Who are you?\" – Ben Affleck, *Cars*. (Yes, I know.) It's pure momentum, inventive missions, and a campaign that never wastes your time. Underrated legend.",
+    body: "\"There's a point at 7,000 RPM… Who are you?\" – Ben Affleck, *Cars*. (Yes, I know.) It's pure momentum, inventive missions, and a campaign that never wastes your time. Underrated legend.",
   },
   {
     key: "skyrim",
     title: "Skyrim",
     cartridgeSrc: "/cartridges.svg",
-    body:
-      "What's a favorites list without Skyrim and Minecraft? For me, Skyrim was company. I grew up with basically no friends; somehow a game designed around isolation brought me comfort. Not the power fantasy, but wandering the world, imagining past battles on mountain tops, following rivers to their source. It taught me games can be a place to feel less alone.",
+    body: "What's a favorites list without Skyrim and Minecraft? For me, Skyrim was company. I grew up with basically no friends; somehow a game designed around isolation brought me comfort. Not the power fantasy, but wandering the world, imagining past battles on mountain tops, following rivers to their source. It taught me games can be a place to feel less alone.",
   },
 ];
 
@@ -82,6 +76,9 @@ export default function GamesThatRaisedMe() {
   const [scrollHint, setScrollHint] = useState(true);
   const [cartridgeEject, setCartridgeEject] = useState(false);
 
+  // Mobile state
+  const [mobileIndex, setMobileIndex] = useState(0);
+
   const steps = Math.max(1, GAMES.length - 1);
   const totalHeightVh = Math.max(VH_PER_STEP * (steps + 1), VH_PER_STEP); // Added +1 to give space for last game
 
@@ -97,7 +94,7 @@ export default function GamesThatRaisedMe() {
     const mapped = adjustedProgress * (GAMES.length - 1);
     const clamped = Math.min(Math.max(mapped, 0), GAMES.length - 1);
     setRaw(clamped);
-    
+
     // Hide scroll hint after first scroll
     if (v > 0.01 && scrollHint) {
       setScrollHint(false);
@@ -129,9 +126,149 @@ export default function GamesThatRaisedMe() {
   // slide distance for cartridge swap
   const SLIDE = useMemo(() => CONSOLE.slot.width * 0.9, []);
 
+  // Mobile navigation
+  const goNextMobile = () =>
+    setMobileIndex((i) => Math.min(i + 1, GAMES.length - 1));
+  const goPrevMobile = () => setMobileIndex((i) => Math.max(i - 1, 0));
+
   return (
-    <section id="games-that-raised-me" className="relative z-10 bg-[rgb(162,122,188)] border-b-8">
-      <div ref={trackRef} style={{ height: `${totalHeightVh}vh` }} className="bg-[rgb(162,122,188)] relative z-10">
+    <section
+      id="games-that-raised-me"
+      className="relative z-10 bg-[rgb(162,122,188)] border-b-[5px] sm:border-b-8 border-black"
+    >
+      {/* ===== MOBILE VERSION ===== */}
+      <div className="md:hidden py-6 px-3 sm:px-4">
+        {/* Mobile Header */}
+        <motion.h2
+          className="
+            mb-4 sm:mb-6
+            text-center leading-[0.85] tracking-[0.02em]
+            [text-shadow:2px_2px_0_var(--color-black),3px_3px_0_var(--color-black)]
+            text-[1.8rem] sm:text-[2.5rem]
+          "
+          style={{
+            color: "#FFE3E3",
+            fontFamily: "'Bebas Neue', sans-serif",
+          }}
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          GAMES THAT RAISED ME
+        </motion.h2>
+
+        {/* Mobile intro text */}
+        <motion.p
+          className="text-center text-xs sm:text-sm font-semibold text-[#FFE3E3]/80 mb-4"
+          style={{ fontFamily: "Poppins, sans-serif" }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          TiltPenguin wouldn&apos;t exist without these:
+        </motion.p>
+
+        {/* Mobile Card */}
+        <div className="relative min-h-[360px] sm:min-h-[400px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={GAMES[mobileIndex].key}
+              className="border-[3px] border-black bg-[#f7f5ef] shadow-[4px_4px_0_#000] p-4 sm:p-5 min-h-[280px] sm:min-h-[320px] flex flex-col"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              {/* Game number badge */}
+              <div className="flex items-center gap-2 mb-2">
+                <span
+                  className="inline-block bg-[var(--color-yellow)] border-[2px] border-black px-2 py-0.5
+                             text-xs font-bold uppercase tracking-wide text-black
+                             shadow-[2px_2px_0_var(--color-black)]"
+                  style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                >
+                  {String(mobileIndex + 1).padStart(2, "0")} /{" "}
+                  {String(GAMES.length).padStart(2, "0")}
+                </span>
+              </div>
+
+              {/* Game title */}
+              <h3
+                className="text-[1.5rem] sm:text-[1.8rem] leading-[1] uppercase mb-2 text-black"
+                style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+              >
+                {GAMES[mobileIndex].title}
+              </h3>
+
+              {/* Game description */}
+              <p
+                className="text-xs sm:text-sm leading-relaxed text-neutral-700 flex-1 overflow-y-auto"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                {GAMES[mobileIndex].body}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Mobile Navigation */}
+          <div className="flex items-center justify-center gap-4 mt-4">
+            <motion.button
+              onClick={goPrevMobile}
+              disabled={mobileIndex === 0}
+              className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border-[3px] border-black shadow-[3px_3px_0_#000] 
+                         flex items-center justify-center transition-all
+                         ${
+                           mobileIndex === 0
+                             ? "bg-gray-300 opacity-50 cursor-not-allowed"
+                             : "bg-[#FFE3E3] hover:shadow-[4px_4px_0_#000] hover:-translate-x-0.5 hover:-translate-y-0.5"
+                         }`}
+              whileTap={mobileIndex > 0 ? { scale: 0.95 } : {}}
+            >
+              <span className="text-black text-lg sm:text-xl font-bold">←</span>
+            </motion.button>
+
+            {/* Dots indicator */}
+            <div className="flex gap-1.5">
+              {GAMES.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setMobileIndex(index)}
+                  className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border-2 border-black transition-all
+                             ${
+                               index === mobileIndex
+                                 ? "bg-black scale-110"
+                                 : "bg-transparent hover:bg-black/30"
+                             }`}
+                />
+              ))}
+            </div>
+
+            <motion.button
+              onClick={goNextMobile}
+              disabled={mobileIndex === GAMES.length - 1}
+              className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border-[3px] border-black shadow-[3px_3px_0_#000] 
+                         flex items-center justify-center transition-all
+                         ${
+                           mobileIndex === GAMES.length - 1
+                             ? "bg-gray-300 opacity-50 cursor-not-allowed"
+                             : "bg-[#FFE3E3] hover:shadow-[4px_4px_0_#000] hover:translate-x-0.5 hover:-translate-y-0.5"
+                         }`}
+              whileTap={mobileIndex < GAMES.length - 1 ? { scale: 0.95 } : {}}
+            >
+              <span className="text-black text-lg sm:text-xl font-bold">→</span>
+            </motion.button>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== DESKTOP VERSION (original with console animation) ===== */}
+      <div
+        ref={trackRef}
+        style={{ height: `${totalHeightVh}vh` }}
+        className="bg-[rgb(162,122,188)] relative z-10 hidden md:block"
+      >
         <div className="sticky top-0 h-[100svh] w-full bg-[rgb(162,122,188)]">
           <div
             className="
@@ -144,19 +281,22 @@ export default function GamesThatRaisedMe() {
             <motion.h2
               className="
                 mt-1 mb-1 md:mb-2
-                text-center leading-[0.82] tracking-[0.04em]
-                [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
-                text-[2.4rem] md:text-[4.2rem] lg:text-[7.2rem]
+                text-center leading-[0.82] tracking-[0.02em] sm:tracking-[0.04em]
+                [text-shadow:2px_2px_0_var(--color-black),3px_3px_0_var(--color-black)] sm:[text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
+                text-[1.6rem] sm:text-[2.4rem] md:text-[4.2rem] lg:text-[7.2rem] px-2
               "
-              style={{ color: "#FFE3E3", fontFamily: "'Bebas Neue', sans-serif" }}
+              style={{
+                color: "#FFE3E3",
+                fontFamily: "'Bebas Neue', sans-serif",
+              }}
               initial={{ opacity: 0, y: -30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              whileHover={{ 
+              whileHover={{
                 scale: 1.02,
                 rotate: [-0.5, 0.5, 0],
-                transition: { duration: 0.3 }
+                transition: { duration: 0.3 },
               }}
             >
               GAMES THAT RAISED ME
@@ -168,21 +308,24 @@ export default function GamesThatRaisedMe() {
                 <motion.div
                   className="absolute top-32 left-1/2 transform -translate-x-1/2 z-30"
                   initial={{ opacity: 0, y: -10 }}
-                  animate={{ 
-                    opacity: 1, 
+                  animate={{
+                    opacity: 1,
                     y: [0, 10, 0],
                     transition: {
                       y: {
                         duration: 1.5,
                         repeat: Infinity,
-                        ease: "easeInOut"
-                      }
-                    }
+                        ease: "easeInOut",
+                      },
+                    },
                   }}
                   exit={{ opacity: 0 }}
                 >
                   <div className="bg-[#FFE3E3] border-2 border-black px-3 py-1 shadow-[3px_3px_0_#000]">
-                    <p className="text-xs font-bold text-black" style={{ fontFamily: "Poppins, sans-serif" }}>
+                    <p
+                      className="text-xs font-bold text-black"
+                      style={{ fontFamily: "Poppins, sans-serif" }}
+                    >
                       SCROLL TO SWAP CARTRIDGES ↓
                     </p>
                   </div>
@@ -193,19 +336,22 @@ export default function GamesThatRaisedMe() {
             {/* Text box (row 2) - with animations added */}
             <div className="w-full min-h-0 relative z-20 ">
               <motion.div
-                className="mx-auto max-w-4xl rounded-xl border-4 border-black bg-[#f7f5ef] p-5 shadow-[12px_12px_0_#000] md:p-7
-                  max-h-[48svh] overflow-auto"
+                className="mx-auto max-w-4xl rounded-lg sm:rounded-xl border-2 sm:border-3 md:border-4 border-black bg-[#f7f5ef] p-3 sm:p-4 md:p-5 lg:p-7 shadow-[6px_6px_0_#000] sm:shadow-[8px_8px_0_#000] md:shadow-[12px_12px_0_#000]
+                  max-h-[40svh] sm:max-h-[45svh] md:max-h-[48svh] overflow-auto"
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
                 whileHover={{ boxShadow: "14px 14px 0 #000" }}
                 style={{
-                  transform: cartridgeEject ? 'scale(1.02)' : 'scale(1)',
-                  transition: 'transform 0.3s ease-out'
+                  transform: cartridgeEject ? "scale(1.02)" : "scale(1)",
+                  transition: "transform 0.3s ease-out",
                 }}
               >
-                <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-neutral-700" style={{ fontFamily: "Poppins, sans-serif" }}>
+                <p
+                  className="mb-2 sm:mb-3 text-xs sm:text-sm font-semibold uppercase tracking-wide text-neutral-700"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
                   TiltPenguin wouldn`&apos;t exist without these:
                 </p>
 
@@ -218,23 +364,30 @@ export default function GamesThatRaisedMe() {
                     transition={{ duration: 0.28, ease: "easeOut" }}
                   >
                     <motion.h3
-                      className="m-0 text-left text-[2.1rem] md:text-[2.4rem] lg:text-[2.65rem] leading-[1.05] uppercase"
+                      className="m-0 text-left text-[1.4rem] sm:text-[1.8rem] md:text-[2.1rem] lg:text-[2.4rem] xl:text-[2.65rem] leading-[1.05] uppercase"
                       style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                      animate={cartridgeEject ? {
-                        x: [0, -2, 2, 0],
-                        transition: { duration: 0.2 }
-                      } : {}}
+                      animate={
+                        cartridgeEject
+                          ? {
+                              x: [0, -2, 2, 0],
+                              transition: { duration: 0.2 },
+                            }
+                          : {}
+                      }
                     >
                       {activeGame.title}
                     </motion.h3>
-                    <p className="m-0 text-sm leading-6.5 text-neutral-800" style={{ fontFamily: "Poppins, sans-serif" }}>
+                    <p
+                      className="m-0 text-xs sm:text-sm leading-5 sm:leading-6 md:leading-6.5 text-neutral-800"
+                      style={{ fontFamily: "Poppins, sans-serif" }}
+                    >
                       {activeGame.body}
                     </p>
                   </motion.div>
                 </AnimatePresence>
-                
+
                 {/* Progress indicator */}
-                <motion.div 
+                <motion.div
                   className="mt-4 flex gap-1 justify-center"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -245,10 +398,11 @@ export default function GamesThatRaisedMe() {
                       key={index}
                       className="w-2 h-2 rounded-full border-2 border-black"
                       style={{
-                        backgroundColor: index === activeTextIdx ? '#000' : 'transparent'
+                        backgroundColor:
+                          index === activeTextIdx ? "#000" : "transparent",
                       }}
                       animate={{
-                        scale: index === activeTextIdx ? [1, 1.2, 1] : 1
+                        scale: index === activeTextIdx ? [1, 1.2, 1] : 1,
                       }}
                       transition={{ duration: 0.3 }}
                     />
@@ -324,7 +478,11 @@ export default function GamesThatRaisedMe() {
                               rotate: cartridgeEject ? 15 * (1 - s) : 0,
                             }
                       }
-                      transition={{ type: "tween", ease: "easeOut", duration: 0 }}
+                      transition={{
+                        type: "tween",
+                        ease: "easeOut",
+                        duration: 0,
+                      }}
                     />
                   )}
 
@@ -340,15 +498,15 @@ export default function GamesThatRaisedMe() {
                         background:
                           "radial-gradient(closest-side, rgba(255,255,255,0.6), rgba(255,255,255,0))",
                       }}
-                      animate={{ 
+                      animate={{
                         opacity: s,
-                        scale: cartridgeEject ? [1, 1.1, 1] : 1
+                        scale: cartridgeEject ? [1, 1.1, 1] : 1,
                       }}
                       transition={{
                         scale: {
                           duration: 0.3,
-                          repeat: cartridgeEject ? Infinity : 0
-                        }
+                          repeat: cartridgeEject ? Infinity : 0,
+                        },
                       }}
                     />
                   )}
@@ -364,23 +522,23 @@ export default function GamesThatRaisedMe() {
                   animate={
                     prefersReduced
                       ? { y: 0, scale: 1 }
-                      : { 
-                          y: -4 * s, 
+                      : {
+                          y: -4 * s,
                           scale: 1 + 0.01 * s,
-                          rotate: cartridgeEject ? [0, -0.5, 0.5, 0] : 0
+                          rotate: cartridgeEject ? [0, -0.5, 0.5, 0] : 0,
                         }
                   }
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 300, 
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
                     damping: 30,
                     rotate: {
                       duration: 0.2,
-                      repeat: cartridgeEject ? 2 : 0
-                    }
+                      repeat: cartridgeEject ? 2 : 0,
+                    },
                   }}
                 />
-                
+
                 {/* Sound effect text */}
                 <AnimatePresence>
                   {cartridgeEject && (
@@ -391,8 +549,10 @@ export default function GamesThatRaisedMe() {
                       exit={{ opacity: 0, y: -10, scale: 0.8 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <p className="text-2xl font-bold text-[#FFE3E3]" 
-                         style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
+                      <p
+                        className="text-2xl font-bold text-[#FFE3E3]"
+                        style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                      >
                         *CLICK*
                       </p>
                     </motion.div>
