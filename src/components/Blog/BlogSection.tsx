@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Button } from "../Button";
 
 type Devlog = {
   _id: string;
@@ -271,21 +272,7 @@ export default function BlogSection() {
           transition={{ delay: 0.3, duration: 0.5 }}
         >
           <Link href="/blog">
-            <motion.button
-              className="inline-block px-6 sm:px-8 py-3 sm:py-4
-                         bg-[var(--color-yellow)] border-[3px] sm:border-[4px] border-black
-                         text-lg sm:text-xl md:text-2xl uppercase tracking-wide text-black font-bold
-                         shadow-[4px_4px_0_var(--color-black)] sm:shadow-[6px_6px_0_var(--color-black)]
-                         hover:shadow-[6px_6px_0_var(--color-black)] sm:hover:shadow-[8px_8px_0_var(--color-black)]
-                         hover:-translate-x-[2px] hover:-translate-y-[2px]
-                         active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--color-black)]
-                         transition-all duration-200"
-              style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-              whileHover={{ rotate: -1 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              View All Devlogs →
-            </motion.button>
+            <Button> View All Devlogs →</Button>
           </Link>
         </motion.div>
       </div>
