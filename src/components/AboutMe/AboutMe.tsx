@@ -65,7 +65,7 @@ function Card({
         </h4>
       )}
       {children && (
-        <p
+        <div
           className={[
             center ? "text-center" : "",
             "m-0 text-sm sm:text-base leading-snug font-bold",
@@ -73,7 +73,7 @@ function Card({
           style={{ fontFamily: "Poppins, sans-serif" }}
         >
           {children}
-        </p>
+        </div>
       )}
       {clicks > 0 && clicks <= 3 && hoverable && (
         <motion.p

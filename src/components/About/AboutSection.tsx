@@ -430,6 +430,7 @@ const AboutSection: React.FC = () => {
           </AnimatePresence>
 
           <DndContext
+            id="about-dnd-context"
             sensors={sensors}
             collisionDetection={closestCenter}
             modifiers={[restrictToWindowEdges]}
