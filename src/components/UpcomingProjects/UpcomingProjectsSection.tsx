@@ -73,10 +73,10 @@ const UpcomingProjectsSection: React.FC = () => {
         d === 0
           ? "center"
           : d === 1
-          ? "right"
-          : d === total - 1
-          ? "left"
-          : "hidden";
+            ? "right"
+            : d === total - 1
+              ? "left"
+              : "hidden";
     });
     return map;
   }, [index, total]);
@@ -139,7 +139,7 @@ const UpcomingProjectsSection: React.FC = () => {
     <section
       className="relative w-full overflow-hidden border-y-[5px] border-black z-10"
       style={{ backgroundColor: "#5C93E7" }}
-      aria-live="polite" 
+      aria-live="polite"
     >
       {/* stronger, tighter grid with animation */}
       <motion.div
@@ -197,18 +197,18 @@ const UpcomingProjectsSection: React.FC = () => {
       {/* title with animation */}
       <div className="relative z-10">
         <motion.h2
-          className="mt-3 mb-1 md:mb-2 text-center leading-[0.82] tracking-[0.04em]
-                     [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
-                     text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem]"
+          className="mt-3 mb-1 md:mb-2 text-center leading-[0.82] tracking-[0.02em] sm:tracking-[0.04em]
+                     [text-shadow:2px_2px_0_var(--color-black),3px_3px_0_var(--color-black)] sm:[text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
+                     text-[1.8rem] sm:text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem] px-2"
           style={{ color: "#C2EEE1", fontFamily: "'Bebas Neue', sans-serif" }}
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          whileHover={{ 
+          whileHover={{
             scale: 1.02,
             rotate: [-0.5, 0.5, 0],
-            transition: { duration: 0.3 }
+            transition: { duration: 0.3 },
           }}
         >
           UPCOMING PROJECTS
@@ -216,9 +216,9 @@ const UpcomingProjectsSection: React.FC = () => {
       </div>
 
       {/* stage wrapper (shorter, denser) */}
-      <div className="relative z-10 mx-auto max-w-[1200px] px-4 md:px-6 pt-3 md:pt-5 pb-6 md:pb-10">
+      <div className="relative z-10 mx-auto max-w-[1200px] px-2 sm:px-4 md:px-6 pt-2 sm:pt-3 md:pt-5 pb-4 sm:pb-6 md:pb-10">
         {/* desktop/tablet: 3-card animated carousel (shorter & narrower) */}
-        <motion.div 
+        <motion.div
           className="relative mx-auto hidden sm:block w-full max-w-[820px] h-[560px]"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -239,8 +239,8 @@ const UpcomingProjectsSection: React.FC = () => {
                   pointerEvents: (t as any).pointerEvents,
                 }}
               >
-                <GameBoy 
-                  project={p} 
+                <GameBoy
+                  project={p}
                   isCenter={slot === "center"}
                   onInteraction={() => setAutoRotate(false)}
                 />
@@ -251,27 +251,35 @@ const UpcomingProjectsSection: React.FC = () => {
 
         {/* mobile: single card (shorter) */}
         <div className="sm:hidden">
-          <div className="relative mx-auto w-full max-w-[400px] min-h-[500px] flex flex-col items-center justify-start pt-0">
+          <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[400px] min-h-[420px] sm:min-h-[500px] flex flex-col items-center justify-start pt-0">
             <AnimatePresence custom={dir} initial={false} mode="wait">
               <motion.div
                 key={projects[index].id}
                 custom={dir}
-                initial={{ x: dir === 1 ? 160 : -160, opacity: 0, rotate: dir === 1 ? 10 : -10 }}
+                initial={{
+                  x: dir === 1 ? 160 : -160,
+                  opacity: 0,
+                  rotate: dir === 1 ? 10 : -10,
+                }}
                 animate={{ x: 0, opacity: 1, rotate: 0 }}
-                exit={{ x: dir === 1 ? -160 : 160, opacity: 0, rotate: dir === 1 ? -10 : 10 }}
+                exit={{
+                  x: dir === 1 ? -160 : 160,
+                  opacity: 0,
+                  rotate: dir === 1 ? -10 : 10,
+                }}
                 transition={spring}
                 className="flex justify-center"
               >
-                <GameBoy 
-                  project={projects[index]} 
+                <GameBoy
+                  project={projects[index]}
                   isCenter={true}
                   onInteraction={() => setAutoRotate(false)}
                 />
               </motion.div>
             </AnimatePresence>
             {/* buttons: moved further down */}
-            <motion.div 
-              className="mt-4 flex items-center justify-center gap-5"
+            <motion.div
+              className="mt-3 sm:mt-4 flex items-center justify-center gap-4 sm:gap-5"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -280,22 +288,22 @@ const UpcomingProjectsSection: React.FC = () => {
               <motion.button
                 aria-label="Previous project"
                 onClick={goPrev}
-                className="group w-14 h-20 rounded-full bg-[#C2EEE1] border-[5px] border-black shadow-[8px_8px_0_#000] grid place-items-center"
+                className="group w-12 h-16 sm:w-14 sm:h-20 rounded-full bg-[#C2EEE1] border-[3px] sm:border-[5px] border-black shadow-[4px_4px_0_#000] sm:shadow-[8px_8px_0_#000] grid place-items-center"
                 whileHover={{ scale: 1.05, boxShadow: "10px 10px 0 #000" }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="text-black text-2xl group-active:translate-x-[-1px]">
+                <span className="text-black text-xl sm:text-2xl group-active:translate-x-[-1px]">
                   ←
                 </span>
               </motion.button>
               <motion.button
                 aria-label="Next project"
                 onClick={goNext}
-                className="group w-14 h-20 rounded-full bg-[#C2EEE1] border-[5px] border-black shadow-[8px_8px_0_#000] grid place-items-center"
+                className="group w-12 h-16 sm:w-14 sm:h-20 rounded-full bg-[#C2EEE1] border-[3px] sm:border-[5px] border-black shadow-[4px_4px_0_#000] sm:shadow-[8px_8px_0_#000] grid place-items-center"
                 whileHover={{ scale: 1.05, boxShadow: "10px 10px 0 #000" }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="text-black text-2xl group-active:translate-x-[1px]">
+                <span className="text-black text-xl sm:text-2xl group-active:translate-x-[1px]">
                   →
                 </span>
               </motion.button>

@@ -48,40 +48,44 @@ function CardShell({
     border === 5
       ? "border-[5px]"
       : border === 4
-      ? "border-[4px]"
-      : "border-[3px]";
+        ? "border-[4px]"
+        : "border-[3px]";
   const shadowCls =
     border === 5
       ? "shadow-[7px_7px_0_var(--color-black)]"
       : border === 4
-      ? "shadow-[6px_6px_0_var(--color-black)]"
-      : "shadow-[4px_4px_0_var(--color-black)]";
+        ? "shadow-[6px_6px_0_var(--color-black)]"
+        : "shadow-[4px_4px_0_var(--color-black)]";
 
   return (
     <motion.div
       className={[
         "w-full",
-        // Taller / squarer cards to match your original design
-        "min-h-[14.25rem] md:min-h-[16rem] lg:min-h-[17.625rem]", // 17.625*2 + 0.75rem gap ≈ 36rem left block
-        "p-4 md:p-5 lg:p-6 select-none bg-[#eeece4]",
+        // Responsive card heights
+        "min-h-[10rem] sm:min-h-[12rem] md:min-h-[14rem] lg:min-h-[17.625rem]",
+        "p-3 sm:p-4 md:p-5 lg:p-6 select-none bg-[#eeece4]",
         borderCls,
         "border-[var(--color-black)]",
         shadowCls,
         className,
       ].join(" ")}
-      animate={isBeingDragged ? {
-        rotate: [0, -2, 2, -1, 1, 0],
-        transition: {
-          duration: 0.5,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }
-      } : {}}
+      animate={
+        isBeingDragged
+          ? {
+              rotate: [0, -2, 2, -1, 1, 0],
+              transition: {
+                duration: 0.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }
+          : {}
+      }
     >
       <h4
         className={[
-          "m-0 text-[1.75rem] md:text-[2rem] leading-[0.9] tracking-[0.04em] text-[var(--color-black)]",
-          "mb-2 md:mb-3",
+          "m-0 text-[1.4rem] sm:text-[1.6rem] md:text-[1.85rem] lg:text-[2rem] leading-[0.9] tracking-[0.04em] text-[var(--color-black)]",
+          "mb-1 sm:mb-2 md:mb-3",
           center ? "text-center" : "",
         ].join(" ")}
         style={{ fontFamily: "'Bebas Neue', sans-serif" }}
@@ -90,7 +94,7 @@ function CardShell({
       </h4>
       <p
         className={[
-          "m-0 text-[0.95rem] md:text-[1rem] leading-[1.35] font-bo text-[var(--color-black)]",
+          "m-0 text-[0.8rem] sm:text-[0.875rem] md:text-[0.95rem] lg:text-[1rem] leading-[1.35] font-bo text-[var(--color-black)]",
           center ? "text-center" : "",
         ].join(" ")}
         style={{ fontFamily: "Poppins, sans-serif" }}
@@ -147,24 +151,28 @@ function SortableCard({
         className,
       ].join(" ")}
       initial={{ opacity: 0, y: 40, rotate: -5 }}
-      whileInView={{ 
-        opacity: 1, 
-        y: 0, 
+      whileInView={{
+        opacity: 1,
+        y: 0,
         rotate: 0,
         transition: {
           delay: index * 0.1,
           duration: 0.5,
-          ease: [0.25, 0.1, 0.25, 1]
-        }
+          ease: [0.25, 0.1, 0.25, 1],
+        },
       }}
       viewport={{ once: true, amount: 0.3 }}
-      whileHover={!isDragging ? {
-        rotate: [0, -1, 1, 0],
-        transition: {
-          duration: 0.3,
-          ease: "easeInOut"
-        }
-      } : {}}
+      whileHover={
+        !isDragging
+          ? {
+              rotate: [0, -1, 1, 0],
+              transition: {
+                duration: 0.3,
+                ease: "easeInOut",
+              },
+            }
+          : {}
+      }
     >
       <CardShell
         item={item}
@@ -174,8 +182,8 @@ function SortableCard({
           isOver
             ? "shadow-[10px_10px_0_var(--color-black)]"
             : !disableHover
-            ? "group-hover:shadow-[8px_8px_0_var(--color-black)]"
-            : ""
+              ? "group-hover:shadow-[8px_8px_0_var(--color-black)]"
+              : ""
         }
       />
     </motion.div>
@@ -232,9 +240,9 @@ const AboutSection: React.FC = () => {
     setActiveId(String(active.id));
     setShowHint(false);
   };
-  
+
   const onDragCancel = (_e: DragCancelEvent) => setActiveId(null);
-  
+
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) {
       setActiveId(null);
@@ -244,7 +252,7 @@ const AboutSection: React.FC = () => {
     const newIndex = items.findIndex((i) => i.id === over.id);
     setItems((prev) => arrayMove(prev, oldIndex, newIndex));
     setActiveId(null);
-    setDragCount(prev => prev + 1);
+    setDragCount((prev) => prev + 1);
   };
 
   const dropAnimation: DropAnimation = {
@@ -259,7 +267,7 @@ const AboutSection: React.FC = () => {
   };
 
   const activeItem = activeId
-    ? items.find((i) => i.id === activeId) ?? null
+    ? (items.find((i) => i.id === activeId) ?? null)
     : null;
   const disableHover = !!activeId;
 
@@ -276,21 +284,21 @@ const AboutSection: React.FC = () => {
       "
     >
       {/* Title with animation */}
-       <motion.h2
-                className="mt-3 mb-1 md:mb-2 text-center leading-[0.82] tracking-[0.04em]
-                           [text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
-                           text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem]"
-                style={{ color: "#FFE68B", fontFamily: "'Bebas Neue', sans-serif" }}
-                initial={{ opacity: 0, y: -30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                whileHover={{ 
-                  scale: 1.02,
-                  rotate: [-0.5, 0.5, 0],
-                  transition: { duration: 0.3 }
-                }}
-              >
+      <motion.h2
+        className="mt-3 mb-1 md:mb-2 text-center leading-[0.82] tracking-[0.02em] sm:tracking-[0.04em]
+                           [text-shadow:2px_2px_0_var(--color-black),3px_3px_0_var(--color-black)] sm:[text-shadow:3px_3px_0_var(--color-black),4px_4px_0_var(--color-black)]
+                           text-[2rem] sm:text-[2.75rem] md:text-[4.75rem] lg:text-[7.75rem] px-2"
+        style={{ color: "#FFE68B", fontFamily: "'Bebas Neue', sans-serif" }}
+        initial={{ opacity: 0, y: -30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        whileHover={{
+          scale: 1.02,
+          rotate: [-0.5, 0.5, 0],
+          transition: { duration: 0.3 },
+        }}
+      >
         ABOUT TILTPENGUIN
       </motion.h2>
 
@@ -304,7 +312,7 @@ const AboutSection: React.FC = () => {
         "
       >
         {/* LEFT — main copy block, taller to balance right side */}
-        <motion.div 
+        <motion.div
           className="lg:h-full"
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -312,17 +320,17 @@ const AboutSection: React.FC = () => {
         >
           <div
             className="
-              h-full w-full border-[5px] border-[var(--color-black)] bg-[#eeece4]
-              p-5 md:p-6 shadow-[8px_8px_0_var(--color-black)] flex items-center
-              lg:min-h-[36rem] md:min-h-[30rem] min-h-[26rem]
-              transition-all duration-300 hover:shadow-[10px_10px_0_var(--color-black)]
+              h-full w-full border-[3px] sm:border-[4px] lg:border-[5px] border-[var(--color-black)] bg-[#eeece4]
+              p-4 sm:p-5 md:p-6 shadow-[4px_4px_0_var(--color-black)] sm:shadow-[6px_6px_0_var(--color-black)] lg:shadow-[8px_8px_0_var(--color-black)] flex items-center
+              min-h-[18rem] sm:min-h-[22rem] md:min-h-[26rem] lg:min-h-[36rem]
+              transition-all duration-300 hover:shadow-[6px_6px_0_var(--color-black)] sm:hover:shadow-[8px_8px_0_var(--color-black)] lg:hover:shadow-[10px_10px_0_var(--color-black)]
             "
           >
             <motion.p
               className="
                 m-0 text-center
-                text-[1.25rem] md:text-[1.75rem] lg:text-[2.25rem]
-                leading-[1.08] tracking-[0.01em] text-[var(--color-black)]
+                text-[1rem] sm:text-[1.15rem] md:text-[1.5rem] lg:text-[2rem] xl:text-[2.25rem]
+                leading-[1.1] sm:leading-[1.08] tracking-[0.01em] text-[var(--color-black)]
               "
               style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               initial={{ opacity: 0 }}
@@ -344,7 +352,7 @@ const AboutSection: React.FC = () => {
         </motion.div>
 
         {/* RIGHT — principles */}
-        <motion.div 
+        <motion.div
           className="lg:h-full relative"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -368,9 +376,9 @@ const AboutSection: React.FC = () => {
               <motion.div
                 className="absolute -top-2 right-0 z-30 hidden md:block"
                 initial={{ opacity: 0, y: -10, rotate: -5 }}
-                animate={{ 
-                  opacity: 1, 
-                  y: 0, 
+                animate={{
+                  opacity: 1,
+                  y: 0,
                   rotate: [0, 2, -2, 0],
                   transition: {
                     opacity: { duration: 0.3 },
@@ -378,14 +386,17 @@ const AboutSection: React.FC = () => {
                     rotate: {
                       duration: 2,
                       repeat: Infinity,
-                      ease: "easeInOut"
-                    }
-                  }
+                      ease: "easeInOut",
+                    },
+                  },
                 }}
                 exit={{ opacity: 0, y: -10 }}
               >
                 <div className="bg-[#FFE68B] border-2 border-black px-3 py-1 shadow-[3px_3px_0_#000]">
-                  <p className="text-xs font-bold text-black" style={{ fontFamily: "Poppins, sans-serif" }}>
+                  <p
+                    className="text-xs font-bold text-black"
+                    style={{ fontFamily: "Poppins, sans-serif" }}
+                  >
                     DRAG TO REARRANGE →
                   </p>
                 </div>
@@ -404,7 +415,10 @@ const AboutSection: React.FC = () => {
                 transition={{ duration: 0.3 }}
               >
                 <div className="bg-[#FFE68B] border-2 border-black px-3 py-1 shadow-[3px_3px_0_#000]">
-                  <p className="text-xs font-bold text-black" style={{ fontFamily: "Poppins, sans-serif" }}>
+                  <p
+                    className="text-xs font-bold text-black"
+                    style={{ fontFamily: "Poppins, sans-serif" }}
+                  >
                     {dragCount === 1 && "YEP, THEY'RE FLEXIBLE"}
                     {dragCount === 2 && "VERY PRINCIPLED, I KNOW"}
                     {dragCount === 3 && "CONSISTENCY IS OVERRATED"}
@@ -463,17 +477,17 @@ const AboutSection: React.FC = () => {
                   fontFamily: "'Bebas Neue', sans-serif",
                 }}
                 initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ 
-                  opacity: 1, 
+                animate={{
+                  opacity: 1,
                   scale: 1,
-                  rotate: dragCount > 0 ? [0, -1, 1, 0] : 0
+                  rotate: dragCount > 0 ? [0, -1, 1, 0] : 0,
                 }}
-                transition={{ 
+                transition={{
                   duration: 0.5,
                   rotate: {
                     duration: 0.3,
-                    ease: "easeInOut"
-                  }
+                    ease: "easeInOut",
+                  },
                 }}
               >
                 PRINCIPLES
