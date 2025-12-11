@@ -358,7 +358,7 @@ export default function AboutMeLocked() {
                 When I&apos;m not wrangling code, I&apos;m usually breaking it
                 on purpose just to see what happens. This site is literally just
                 a museum of prototypes, mistakes and happy accidents (shout out
-                Bob Ross).
+                Bob Ross !!).
               </p>
             </Card>
           </Aspect>
