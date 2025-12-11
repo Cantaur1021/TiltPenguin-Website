@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { CardColumn } from "../CardColumn";
 import { Button } from "../Button";
 import { motion } from "framer-motion";
@@ -205,9 +206,16 @@ const HeroSection: React.FC = () => {
           }}
           whileTap={{ y: 0 }}
         >
-          <Button>COMING SOON</Button>
-
-          <Button variant="secondary">Follow Along</Button>
+          <Link
+            href="https://github.com/Cantaur1021/TiltPenguin-Website"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button>View Source</Button>
+          </Link>
+          <Link href="/blog">
+            <Button variant="secondary">Follow Along</Button>
+          </Link>
         </motion.div>
       </motion.div>
 

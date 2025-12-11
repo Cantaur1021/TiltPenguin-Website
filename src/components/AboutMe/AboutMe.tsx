@@ -329,7 +329,7 @@ export default function AboutMeLocked() {
             <ImageCard
               src="/images/about/bottom-left.webp"
               alt="Lab chaos"
-              label="BARELY GROWN-UP ENGINEERING"
+              label="Barely Surviving Engineering"
               delay={0.6}
             />
           </Aspect>
@@ -342,7 +342,7 @@ export default function AboutMeLocked() {
             <ImageCard
               src="/images/about/top-right.webp"
               alt="Retro gaming setup"
-              label="2007 KERALA // OUTDOOR GAMING SETUP"
+              label="First Gaming Setup"
               delay={0.2}
               parallax
             />
@@ -358,7 +358,7 @@ export default function AboutMeLocked() {
                 When I&apos;m not wrangling code, I&apos;m usually breaking it
                 on purpose just to see what happens. This site is literally just
                 a museum of prototypes, mistakes and happy accidents (shout out
-                Bob Ross).
+                Bob Ross !!).
               </p>
             </Card>
           </Aspect>
@@ -368,7 +368,7 @@ export default function AboutMeLocked() {
             <ImageCard
               src="/images/about/bottom-right.webp"
               alt="Kerala street"
-              label="KERALA MY SPAWN POINT"
+              label="Kerala, My Spawn Point"
               delay={0.6}
             />
           </Aspect>
