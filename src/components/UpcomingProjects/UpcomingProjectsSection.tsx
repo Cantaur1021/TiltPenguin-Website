@@ -5,12 +5,32 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import GameBoy from "./GameBoy";
 
-type Project = { id: string; title: string; screenImage?: string };
+type Project = {
+  id: string;
+  title: string;
+  screenImage?: string;
+  link?: string;
+};
 
 const projects: Project[] = [
-  { id: "p1", title: "ORDER FROM BELOW", screenImage: "/screens/order-1.png" },
-  { id: "p2", title: "ORDER FROM BELOW", screenImage: "/screens/order-2.png" },
-  { id: "p3", title: "ORDER FROM BELOW", screenImage: "/screens/order-3.png" },
+  {
+    id: "p1",
+    title: "This Website",
+    screenImage: "/screens/this-website.png",
+    link: "https://github.com/Cantaur1021/TiltPenguin-Website",
+  },
+  {
+    id: "p2",
+    title: "Myself",
+    screenImage: "/screens/linkedin1.png",
+    link: "https://www.linkedin.com/in/chinmay-rajeev-746498217/",
+  },
+  {
+    id: "p3",
+    title: "Secrets",
+    screenImage: "/screens/question-mark.png",
+    link: "https://github.com/TiltPenguin-Org",
+  },
 ];
 
 const mod = (n: number, m: number) => ((n % m) + m) % m;

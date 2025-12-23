@@ -9,6 +9,7 @@ type Project = {
   id: string;
   title: string;
   screenImage?: string;
+  link?: string;
 };
 
 export default function GameBoy({
@@ -133,7 +134,7 @@ export default function GameBoy({
               src={project.screenImage}
               alt=""
               fill
-              className="object-contain max-h-[72%] max-w-[86%] m-auto"
+              className="object-contain max-h-[85%] max-w-[94%] m-auto"
               style={{ position: "absolute", inset: 0 }}
               sizes="(max-width: 364px) 100vw, 364px"
               priority
@@ -308,7 +309,9 @@ export default function GameBoy({
             }}
             onClick={() => {
               onInteraction?.();
-              console.log("View Source clicked for:", project.title);
+              if (project.link) {
+                window.open(project.link, "_blank");
+              }
             }}
           >
             View Source

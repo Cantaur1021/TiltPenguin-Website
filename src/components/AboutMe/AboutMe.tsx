@@ -297,7 +297,7 @@ export default function AboutMeLocked() {
           <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
             <Aspect ratio="296/251">
               <Card title="SUPERPOWER" center delay={0.2} hoverable>
-                Turning barely baked ideas into barely playable demos.
+                Turning half baked ideas into barely playable demos.
               </Card>
             </Aspect>
             <Aspect ratio="296/251">
