@@ -22,7 +22,6 @@ import {
   SortableContext,
   useSortable,
   rectSortingStrategy,
-  arrayMove,
 } from "@dnd-kit/sortable";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
@@ -250,7 +249,16 @@ const AboutSection: React.FC = () => {
     }
     const oldIndex = items.findIndex((i) => i.id === active.id);
     const newIndex = items.findIndex((i) => i.id === over.id);
-    setItems((prev) => arrayMove(prev, oldIndex, newIndex));
+
+    setItems((prev) => {
+      const newArr = [...prev];
+      [newArr[oldIndex], newArr[newIndex]] = [
+        newArr[newIndex],
+        newArr[oldIndex],
+      ];
+      return newArr;
+    });
+
     setActiveId(null);
     setDragCount((prev) => prev + 1);
   };
@@ -270,9 +278,6 @@ const AboutSection: React.FC = () => {
     ? (items.find((i) => i.id === activeId) ?? null)
     : null;
   const disableHover = !!activeId;
-
-  const firstRow = items.slice(0, 2);
-  const secondRow = items.slice(2);
 
   return (
     <section
@@ -442,9 +447,8 @@ const AboutSection: React.FC = () => {
               items={items.map((i) => i.id)}
               strategy={rectSortingStrategy}
             >
-              {/* Mobile/Tablet */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:hidden">
-                {items.map((it, idx) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
+                {items.slice(0, 2).map((it, idx) => (
                   <SortableCard
                     key={it.id}
                     item={it}
@@ -452,60 +456,46 @@ const AboutSection: React.FC = () => {
                     index={idx}
                   />
                 ))}
-              </div>
 
-              {/* Desktop row 1 */}
-              <div className="hidden lg:grid grid-cols-2 gap-3">
-                {firstRow.map((it, idx) => (
-                  <SortableCard
-                    key={it.id}
-                    item={it}
-                    disableHover={disableHover}
-                    index={idx}
-                  />
-                ))}
-              </div>
-
-              {/* Mid heading (desktop) with wobble */}
-              <motion.h3
-                className="
-                  hidden lg:block my-2 text-center leading-[0.82] tracking-[0.04em]
-                  [text-shadow:2px_2px_0_var(--color-black),3px_3px_0_var(--color-black)]
-                  text-[4.25rem]
-                "
-                style={{
-                  color: "#FFE68B",
-                  fontFamily: "'Bebas Neue', sans-serif",
-                }}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  rotate: dragCount > 0 ? [0, -1, 1, 0] : 0,
-                }}
-                transition={{
-                  duration: 0.5,
-                  rotate: {
-                    duration: 0.3,
-                    ease: "easeInOut",
-                  },
-                }}
-              >
-                PRINCIPLES
-                {dragCount > 2 && (
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-[2rem] ml-2"
+                <div className="hidden lg:block col-span-2">
+                  <motion.h3
+                    className="
+                      my-2 text-center leading-[0.82] tracking-[0.04em]
+                      [text-shadow:2px_2px_0_var(--color-black),3px_3px_0_var(--color-black)]
+                      text-[4.25rem]
+                    "
+                    style={{
+                      color: "#FFE68B",
+                      fontFamily: "'Bebas Neue', sans-serif",
+                    }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      rotate: dragCount > 0 ? [0, -1, 1, 0] : 0,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      rotate: {
+                        duration: 0.3,
+                        ease: "easeInOut",
+                      },
+                    }}
                   >
-                    ?
-                  </motion.span>
-                )}
-              </motion.h3>
+                    PRINCIPLES
+                    {dragCount > 2 && (
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-[2rem] ml-2"
+                      >
+                        ?
+                      </motion.span>
+                    )}
+                  </motion.h3>
+                </div>
 
-              {/* Desktop row 2 */}
-              <div className="hidden lg:grid grid-cols-2 gap-3">
-                {secondRow.map((it, idx) => (
+                {items.slice(2).map((it, idx) => (
                   <SortableCard
                     key={it.id}
                     item={it}
