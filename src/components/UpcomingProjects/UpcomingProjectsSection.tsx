@@ -8,9 +8,17 @@ import GameBoy from "./GameBoy";
 type Project = { id: string; title: string; screenImage?: string };
 
 const projects: Project[] = [
-  { id: "p1", title: "ORDER FROM BELOW", screenImage: "/screens/order-1.png" },
-  { id: "p2", title: "ORDER FROM BELOW", screenImage: "/screens/order-2.png" },
-  { id: "p3", title: "ORDER FROM BELOW", screenImage: "/screens/order-3.png" },
+  {
+    id: "p1",
+    title: "This Website",
+    screenImage: "/screens/this-website.png",
+  },
+  { id: "p2", title: "Myself", screenImage: "/screens/myself.png" },
+  {
+    id: "p3",
+    title: "ORDER FROM BELOW",
+    screenImage: "/screens/order-from-below.png",
+  },
 ];
 
 const mod = (n: number, m: number) => ((n % m) + m) % m;
