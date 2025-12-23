@@ -8,7 +8,7 @@ export const useCustomCursor = (): void => {
     style.innerHTML = `
       /* Pointer cursor for EVERYTHING by default */
       *, *:hover, *:active, *:focus {
-        cursor: url('/cursors/pointer.png') 16 16, auto !important;
+        cursor: url('/cursors/pointer.png') 12 12, auto !important;
       }
       
       /* Flipper cursor only for drag-specific classes */
