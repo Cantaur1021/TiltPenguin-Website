@@ -14,11 +14,6 @@ const projects: Project[] = [
     screenImage: "/screens/this-website.png",
   },
   { id: "p2", title: "Myself", screenImage: "/screens/myself.png" },
-  {
-    id: "p3",
-    title: "ORDER FROM BELOW",
-    screenImage: "/screens/order-from-below.png",
-  },
 ];
 
 const mod = (n: number, m: number) => ((n % m) + m) % m;
