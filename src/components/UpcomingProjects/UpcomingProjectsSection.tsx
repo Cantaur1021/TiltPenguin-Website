@@ -13,7 +13,7 @@ const projects: Project[] = [
     title: "This Website",
     screenImage: "/screens/this-website.png",
   },
-  { id: "p2", title: "Myself", screenImage: "/screens/myself.png" },
+  { id: "p2", title: "Myself", screenImage: "/screens/linkedin1.png" },
   { id: "p3", title: "Secrets", screenImage: "/screens/question-mark.png" },
 ];
 
