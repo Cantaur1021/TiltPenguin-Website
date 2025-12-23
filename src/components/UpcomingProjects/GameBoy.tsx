@@ -9,6 +9,7 @@ type Project = {
   id: string;
   title: string;
   screenImage?: string;
+  link?: string;
 };
 
 export default function GameBoy({
@@ -308,7 +309,9 @@ export default function GameBoy({
             }}
             onClick={() => {
               onInteraction?.();
-              console.log("View Source clicked for:", project.title);
+              if (project.link) {
+                window.open(project.link, "_blank");
+              }
             }}
           >
             View Source
