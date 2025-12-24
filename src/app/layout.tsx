@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.png", media: "(prefers-color-scheme: light)" },
-      { url: "/favicon.png", media: "(prefers-color-scheme: dark)" },
+      { url: "/icon.svg", media: "(prefers-color-scheme: light)" },
+      { url: "/icon.svg", media: "(prefers-color-scheme: dark)" },
     ],
   },
 };
