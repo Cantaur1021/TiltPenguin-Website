@@ -342,16 +342,16 @@ const AboutSection: React.FC = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              TILTPENGUIN IS A BOOTSTRAP GAME STUDIO RUN BY EXACTLY ONE PERSON.
+              TiltPenguin is a bootstrap game studio run by exactly one person.
               <br />
               <br />
-              BUILT ON SLEEPLESS NIGHTS, A LOT OF MISPLACED CONFIDENCE AND AN
-              UNHEALTHY RELATIONSHIP WITH GIT RESTORE.
+              Built on sleepless nights, a lot of misplaced confidence and an
+              unhealthy relationship with git restore.
               <br />
               <br />
-              EVERYTHING MADE HERE IS FREE AND OPEN BY DESIGN, BECAUSE THINGS
-              ARE ALWAYS MORE FUN WHEN YOU HAVE A 20 SOMETHING YEAR OLD YOU CAN
-              LAUGH AT.
+              Everything made here is free and open by design, because things
+              are always more fun when you have a 20 something year old you can
+              laugh at.
             </motion.p>
           </div>
         </motion.div>

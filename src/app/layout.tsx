@@ -16,7 +16,11 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "TiltPenguin",
-  description: "A scrappy solo studio powered by caffeine and delusion.",
+  description:
+    "Tiltpenguin is a solo indie game studio building experimental and story driven games.",
+  alternates: {
+    canonical: "https://tiltpenguin.com",
+  },
 };
 
 export default function RootLayout({
