@@ -21,6 +21,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://tiltpenguin.com",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.png", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon.png", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
 };
 
 export default function RootLayout({
